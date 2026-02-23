@@ -27,8 +27,8 @@ export function ResumePositioningWorkspace({
   const [showUpload, setShowUpload] = useState<boolean>(!initialAnalysis);
 
   return (
-    <div className="space-y-8">
-      <section className="l1-surface rounded-xl p-6">
+    <div className="space-y-10">
+      <section className="section-shell rounded-2xl p-7">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <p className="label-micro">
@@ -49,7 +49,7 @@ export function ResumePositioningWorkspace({
             ) : null}
           </div>
           <button
-            className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-500/45 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
+            className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-500/45 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
             onClick={() => setShowUpload((current) => !current)}
             type="button"
           >

@@ -50,7 +50,7 @@ export default async function AssessmentPage({
 
   if (!latestAssessment) {
     return (
-      <main className="min-h-screen bg-[linear-gradient(180deg,#0E1117_0%,#111827_100%)] text-slate-100">
+      <main className="min-h-screen text-slate-100">
         <div className="mx-auto min-h-screen w-full max-w-4xl px-6 py-10">
           <AssessmentForm mode="initial" />
         </div>
@@ -70,7 +70,7 @@ export default async function AssessmentPage({
 
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#0E1117_0%,#111827_100%)] text-slate-100">
+    <main className="min-h-screen text-slate-100">
       <div className="mx-auto min-h-screen w-full max-w-4xl px-6 py-10">
         <AssessmentForm
           initialAnswers={latestAssessment.answers}

@@ -65,7 +65,7 @@ export default async function DashboardSettingsPage() {
   return (
     <main className="min-h-screen text-slate-100">
       <div className="mx-auto w-full max-w-7xl px-6 py-10">
-        <section className="l1-surface rounded-xl p-8">
+        <section className="section-shell rounded-2xl p-8">
           <p className="label-micro">Settings</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-100">
             Account Settings
@@ -75,8 +75,32 @@ export default async function DashboardSettingsPage() {
           </p>
         </section>
 
-        <div className="mt-8 space-y-8">
-          <section className="l1-surface rounded-xl p-8">
+        <div className="mt-8 grid gap-8 xl:grid-cols-[280px_minmax(0,1fr)]">
+          <aside className="section-shell h-fit rounded-2xl p-6">
+            <p className="label-micro">Settings Navigation</p>
+            <nav className="mt-4 space-y-2">
+              {[
+                { label: "Identity & Profile", href: "#identity-profile" },
+                { label: "Plan & Billing", href: "#plan-billing" },
+                { label: "Data & Privacy", href: "#data-privacy" },
+              ].map((item, idx) => (
+                <a
+                  className={`block rounded-lg border px-3 py-2.5 text-sm ${
+                    idx === 0
+                      ? "border-indigo-300/35 bg-indigo-400/12 text-indigo-100"
+                      : "border-slate-700/70 bg-slate-900/55 text-slate-300"
+                  }`}
+                  href={item.href}
+                  key={item.label}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </aside>
+
+          <div className="space-y-8">
+          <section className="section-shell rounded-2xl p-8" id="identity-profile">
             <div className="flex items-center gap-4">
               {avatarUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -99,16 +123,14 @@ export default async function DashboardSettingsPage() {
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <ProfileForm
-                initialFullName={fullName ?? metadataFullName ?? displayName}
-              />
-              <div className="rounded-lg border border-slate-700/60 bg-slate-900/55 p-4">
+              <ProfileForm initialFullName={fullName ?? metadataFullName ?? displayName} />
+              <div className="l2-surface rounded-xl p-4">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
                   Email
                 </p>
                 <p className="mt-2 text-sm text-slate-100">{email ?? "Unavailable"}</p>
               </div>
-              <div className="rounded-lg border border-slate-700/60 bg-slate-900/55 p-4">
+              <div className="l2-surface rounded-xl p-4">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
                   Timezone
                 </p>
@@ -116,7 +138,7 @@ export default async function DashboardSettingsPage() {
                   Configurable in a future release.
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-700/60 bg-slate-900/55 p-4">
+              <div className="l2-surface rounded-xl p-4">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
                   Security
                 </p>
@@ -127,7 +149,7 @@ export default async function DashboardSettingsPage() {
             </div>
           </section>
 
-          <section className="l1-surface rounded-xl p-8">
+          <section className="section-shell rounded-2xl p-8" id="plan-billing">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="label-micro">Plan & Billing</p>
@@ -147,7 +169,7 @@ export default async function DashboardSettingsPage() {
             </div>
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
-              <div className="rounded-lg border border-slate-700/60 bg-slate-900/55 p-4">
+              <div className="l2-surface rounded-xl p-4">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
                   Current Access
                 </p>
@@ -157,7 +179,7 @@ export default async function DashboardSettingsPage() {
                     : "Core assessment and limited intelligence preview enabled."}
                 </p>
               </div>
-              <div className="rounded-lg border border-slate-700/60 bg-slate-900/55 p-4">
+              <div className="l2-surface rounded-xl p-4">
                 <p className="text-xs uppercase tracking-[0.14em] text-slate-400">
                   Billing
                 </p>
@@ -170,13 +192,13 @@ export default async function DashboardSettingsPage() {
 
             <div className="mt-6 flex flex-wrap gap-3">
               <Link
-                className="inline-flex h-10 items-center justify-center rounded-lg border border-indigo-300/25 bg-indigo-400/20 px-4 text-sm font-medium text-indigo-100 transition-all duration-150 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28"
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-indigo-300/25 bg-indigo-400/20 px-4 text-sm font-medium text-indigo-100 transition-all duration-150 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28"
                 href="/pricing"
               >
                 {plan === "pro" ? "View Plan Details" : "Upgrade to Pro"}
               </Link>
               <button
-                className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-lg border border-slate-600/70 bg-slate-800/50 px-4 text-sm font-medium text-slate-400"
+                className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-xl border border-slate-600/70 bg-slate-800/50 px-4 text-sm font-medium text-slate-400"
                 disabled
                 type="button"
               >
@@ -185,7 +207,7 @@ export default async function DashboardSettingsPage() {
             </div>
           </section>
 
-          <section className="l1-surface rounded-xl p-8">
+          <section className="section-shell rounded-2xl p-8" id="data-privacy">
             <p className="label-micro">Data & Privacy</p>
             <h2 className="mt-1 text-xl font-semibold text-slate-100">
               Data Controls
@@ -197,14 +219,14 @@ export default async function DashboardSettingsPage() {
 
             <div className="mt-6 flex flex-wrap gap-3">
               <button
-                className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-lg border border-slate-600/70 bg-slate-800/50 px-4 text-sm font-medium text-slate-400"
+                className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-xl border border-slate-600/70 bg-slate-800/50 px-4 text-sm font-medium text-slate-400"
                 disabled
                 type="button"
               >
                 Export Data (Coming Soon)
               </button>
               <button
-                className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-lg border border-rose-500/45 bg-rose-500/10 px-4 text-sm font-medium text-rose-300/80"
+                className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-xl border border-rose-500/45 bg-rose-500/10 px-4 text-sm font-medium text-rose-300/80"
                 disabled
                 type="button"
               >
@@ -212,6 +234,7 @@ export default async function DashboardSettingsPage() {
               </button>
             </div>
           </section>
+          </div>
         </div>
       </div>
     </main>

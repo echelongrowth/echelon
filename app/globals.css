@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b1220;
+  --background: #090f1d;
   --surface-l1: #0f172a;
-  --surface-l2: #111827;
-  --surface-l3: #1f2937;
-  --surface-subtle: #0b1528;
-  --foreground: #e6edf7;
-  --muted: #9aa9bf;
-  --border: rgba(51, 65, 85, 0.9);
-  --border-strong: rgba(71, 85, 105, 0.95);
-  --accent-primary: #7c86b7;
-  --accent-secondary: #5f7498;
-  --accent-risk: #b16c6c;
-  --accent-success: #5d8a76;
+  --surface-l2: #121b31;
+  --surface-l3: #1a2438;
+  --surface-subtle: #0c1529;
+  --foreground: #e8eef9;
+  --muted: #96a7c3;
+  --border: rgba(71, 85, 105, 0.56);
+  --border-strong: rgba(99, 115, 140, 0.84);
+  --accent-primary: #6d83c7;
+  --accent-secondary: #5d7198;
+  --accent-risk: #b66f77;
+  --accent-success: #5d8d78;
 }
 
 @theme inline {
@@ -30,9 +30,9 @@
 
 body {
   background:
-    radial-gradient(120% 90% at 50% -10%, rgba(55, 68, 96, 0.24) 0%, rgba(11, 18, 32, 0) 58%),
-    radial-gradient(80% 70% at 90% 20%, rgba(41, 57, 81, 0.16) 0%, rgba(11, 18, 32, 0) 62%),
-    linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+    radial-gradient(110% 85% at 8% -10%, rgba(72, 94, 140, 0.18) 0%, rgba(9, 15, 29, 0) 64%),
+    radial-gradient(75% 65% at 92% 18%, rgba(67, 84, 119, 0.14) 0%, rgba(9, 15, 29, 0) 62%),
+    linear-gradient(180deg, #090f1d 0%, #10192d 100%);
   color: var(--foreground);
   font-family: var(--font-geist-sans), "Segoe UI", sans-serif;
 }
@@ -52,17 +52,26 @@ body {
   animation: fade-in-up 220ms ease-in-out both;
 }
 
+@keyframes fade-in-soft {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @layer utilities {
   .l1-surface {
     border: 1px solid var(--border);
-    background: var(--surface-l1);
-    box-shadow: 0 2px 12px rgba(2, 6, 23, 0.24);
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.96) 0%, rgba(13, 21, 37, 0.94) 100%);
+    box-shadow: 0 10px 34px rgba(2, 6, 23, 0.22);
   }
 
   .l2-surface {
     border: 1px solid var(--border);
-    background: var(--surface-l2);
-    box-shadow: 0 1px 8px rgba(2, 6, 23, 0.2);
+    background: linear-gradient(180deg, rgba(18, 27, 49, 0.96) 0%, rgba(16, 24, 43, 0.95) 100%);
+    box-shadow: 0 6px 24px rgba(2, 6, 23, 0.2);
   }
 
   .l3-surface {
@@ -72,7 +81,7 @@ body {
   }
 
   .panel-hover {
-    transition: all 150ms ease;
+    transition: all 180ms ease;
   }
 
   .panel-hover:hover {
@@ -93,5 +102,15 @@ body {
     color: #dbe4f0;
     font-weight: 600;
     letter-spacing: -0.02em;
+  }
+
+  .section-shell {
+    border: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(14, 22, 40, 0.94) 0%, rgba(12, 19, 36, 0.94) 100%);
+    box-shadow: 0 8px 24px rgba(2, 6, 23, 0.18);
+  }
+
+  .fade-in-soft {
+    animation: fade-in-soft 280ms ease-out both;
   }
 }

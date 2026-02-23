@@ -64,7 +64,7 @@ function TextInput(props: InputHTMLAttributes<HTMLInputElement>) {
   const { className = "", ...rest } = props;
   return (
     <input
-      className={`h-11 w-full rounded-lg border border-white/15 bg-slate-950/50 px-3 text-sm text-slate-100 outline-none transition-all duration-200 ease-in-out placeholder:text-slate-500 focus:border-[#8B5CF6]/60 focus:shadow-[0_0_20px_rgba(139,92,246,0.2)] ${className}`}
+      className={`h-11 w-full rounded-xl border border-slate-700/70 bg-slate-950/60 px-3.5 text-sm text-slate-100 outline-none transition-all duration-200 ease-out placeholder:text-slate-500 focus:border-indigo-300/55 focus:bg-slate-900/70 ${className}`}
       {...rest}
     />
   );
@@ -74,7 +74,7 @@ function SelectInput(props: SelectHTMLAttributes<HTMLSelectElement>) {
   const { className = "", ...rest } = props;
   return (
     <select
-      className={`h-11 w-full rounded-lg border border-white/15 bg-slate-950/50 px-3 text-sm text-slate-100 outline-none transition-all duration-200 ease-in-out focus:border-[#8B5CF6]/60 focus:shadow-[0_0_20px_rgba(139,92,246,0.2)] ${className}`}
+      className={`h-11 w-full rounded-xl border border-slate-700/70 bg-slate-950/60 px-3.5 text-sm text-slate-100 outline-none transition-all duration-200 ease-out focus:border-indigo-300/55 focus:bg-slate-900/70 ${className}`}
       {...rest}
     />
   );
@@ -84,7 +84,7 @@ function TextAreaInput(props: TextareaHTMLAttributes<HTMLTextAreaElement>) {
   const { className = "", ...rest } = props;
   return (
     <textarea
-      className={`w-full rounded-lg border border-white/15 bg-slate-950/50 px-3 py-2 text-sm text-slate-100 outline-none transition-all duration-200 ease-in-out placeholder:text-slate-500 focus:border-[#8B5CF6]/60 focus:shadow-[0_0_20px_rgba(139,92,246,0.2)] ${className}`}
+      className={`w-full rounded-xl border border-slate-700/70 bg-slate-950/60 px-3.5 py-2.5 text-sm text-slate-100 outline-none transition-all duration-200 ease-out placeholder:text-slate-500 focus:border-indigo-300/55 focus:bg-slate-900/70 ${className}`}
       rows={4}
       {...rest}
     />
@@ -255,9 +255,9 @@ export function AssessmentForm({ initialAnswers, mode }: AssessmentFormProps) {
   }
 
   return (
-    <section className="w-full space-y-8 rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm sm:p-10">
+    <section className="section-shell w-full space-y-8 rounded-2xl p-8 sm:p-10">
       <header className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+        <p className="label-micro">
           Strategic Position Recalibration
         </p>
         <h1 className="text-3xl font-semibold tracking-tight text-slate-100">
@@ -610,9 +610,9 @@ export function AssessmentForm({ initialAnswers, mode }: AssessmentFormProps) {
         </p>
       ) : null}
 
-      <footer className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+      <footer className="flex flex-col-reverse gap-3 border-t border-slate-700/70 pt-2 sm:flex-row sm:justify-between">
         <button
-          className="inline-flex h-11 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-in-out hover:border-[#8B5CF6]/50 hover:shadow-[0_0_24px_rgba(139,92,246,0.25)] disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex h-11 items-center justify-center rounded-xl border border-slate-600/70 bg-slate-900/55 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/70 hover:bg-slate-800/60 disabled:cursor-not-allowed disabled:opacity-50"
           disabled={step === 1 || isSubmitting}
           onClick={previousStep}
           type="button"

@@ -17,20 +17,20 @@ export function ProgressChecklist() {
   const completionPct = Math.round((completedCount / defaultItems.length) * 100);
 
   return (
-    <section className="l2-surface rounded-xl p-8">
+    <section className="section-shell rounded-2xl p-8 fade-in-soft">
       <div className="flex items-center gap-3">
-        <span className="h-6 w-1 rounded-full bg-slate-500/70" />
+        <span className="h-6 w-1 rounded-full bg-indigo-300/70" />
         <p className="label-micro">Tactical Execution</p>
       </div>
       <div className="mt-3 flex items-end justify-between gap-3">
         <h3 className="text-2xl font-semibold text-slate-100">Progress Tracking</h3>
-        <p className="rounded-md border border-slate-600/50 bg-slate-800/50 px-2.5 py-1 text-xs font-medium text-slate-300">
+        <p className="rounded-md border border-slate-600/50 bg-slate-800/50 px-2.5 py-1 text-xs font-medium text-slate-200">
           {completionPct}% complete
         </p>
       </div>
-      <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-slate-800/80">
+      <div className="mt-5 h-2.5 w-full overflow-hidden rounded-full bg-slate-800/90">
         <div
-          className="h-full rounded-full bg-slate-500/85 transition-all duration-200 ease-in-out"
+          className="h-full rounded-full bg-indigo-300/70 transition-all duration-300 ease-in-out"
           style={{ width: `${completionPct}%` }}
         />
       </div>
@@ -43,6 +43,11 @@ export function ProgressChecklist() {
             className="group flex items-start gap-3 rounded-lg border border-slate-700/60 bg-slate-900/55 p-4 transition-all duration-150 ease-out hover:bg-slate-800/70"
             key={item}
           >
+            <span
+              className={`mt-1 h-5 w-0.5 rounded-full ${
+                checked[idx] ? "bg-indigo-300/80" : "bg-slate-600/70"
+              }`}
+            />
             <button
               aria-label={`Toggle item ${idx + 1}`}
               className={`relative mt-0.5 h-6 w-11 rounded-full border transition-all duration-200 ease-in-out ${
@@ -68,6 +73,9 @@ export function ProgressChecklist() {
             </button>
             <span className="text-sm text-slate-200 transition-colors duration-200 ease-in-out group-hover:text-slate-100">
               {item}
+            </span>
+            <span className="ml-auto rounded-md border border-slate-600/60 bg-slate-800/55 px-2 py-0.5 text-[11px] text-slate-300">
+              {checked[idx] ? "Complete" : "Pending"}
             </span>
           </label>
         ))}

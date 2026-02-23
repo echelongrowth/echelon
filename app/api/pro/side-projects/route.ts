@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { generateStrategicSideProjects } from "@/lib/ai/generateStrategicSideProjects";
+import { getPlanTypeForUser } from "@/lib/plan";
 import type { AssessmentAnswers } from "@/types/assessment";
 import type { Json } from "@/types/database";
 import type {
@@ -57,20 +58,19 @@ export async function POST() {
       return NextResponse.json({ error: "Authentication required." }, { status: 401 });
     }
 
-    const { data: profile, error: profileError } = await supabase
+    const { data: profile } = await supabase
       .from("users")
       .select("plan,full_name")
       .eq("id", user.id)
       .maybeSingle();
 
-    if (profileError) {
-      return NextResponse.json(
-        { error: "Unable to load user profile." },
-        { status: 500 }
-      );
-    }
-
-    const plan = profile?.plan === "pro" ? "pro" : "free";
+    // Do not hard-fail if users profile row or RLS access is missing.
+    // Fall back to auth metadata plan so feature gating remains operational.
+    const derivedPlan = getPlanTypeForUser(user);
+    const plan =
+      profile?.plan === "pro" || profile?.plan === "free"
+        ? profile.plan
+        : derivedPlan;
     if (plan !== "pro") {
       const unavailable: SideProjectsApiResponse = {
         feature_available: false,
@@ -194,7 +194,11 @@ export async function POST() {
       generated = await generateStrategicSideProjects({
         analysis_json: analysisJson,
         user_profile: {
-          full_name: profile?.full_name ?? null,
+          full_name:
+            profile?.full_name ??
+            (typeof user.user_metadata?.full_name === "string"
+              ? user.user_metadata.full_name
+              : null),
           plan,
         },
         career_goal: careerGoal,

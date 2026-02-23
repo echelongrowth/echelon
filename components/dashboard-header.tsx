@@ -163,7 +163,7 @@ export function DashboardHeader({
   recalibrateHref,
 }: DashboardHeaderProps) {
   return (
-    <header className="fade-in-up l1-surface rounded-xl p-8">
+    <header className="fade-in-up l1-surface rounded-2xl p-8">
       <div className="grid gap-6 xl:grid-cols-[1.15fr_1fr_auto] xl:items-center">
         <UserIdentity firstName={firstName} planType={planType} />
         <StrategicStatus

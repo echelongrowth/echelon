@@ -85,7 +85,7 @@ export default async function ResumePositioningPage() {
 
   return (
     <main className="min-h-screen text-slate-100">
-      <div className="mx-auto w-full max-w-6xl px-6 py-10">
+      <div className="mx-auto w-full max-w-7xl px-6 py-10">
         <ResumePositioningWorkspace
           initialAnalysis={initialAnalysis}
           initialAnalysisId={latestAnalysisRow?.id ?? null}

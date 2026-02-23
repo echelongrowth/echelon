@@ -20,30 +20,29 @@ type RiskLeverageRadarProps = {
 
 export function RiskLeverageRadar({ data }: RiskLeverageRadarProps) {
   return (
-    <div className="l2-surface panel-hover h-80 w-full rounded-xl p-6 lg:col-span-4">
-      <p className="label-micro">
-        Risk-Leverage Radar
-      </p>
+    <div className="l2-surface panel-hover h-[360px] w-full rounded-2xl p-6 lg:col-span-4">
+      <p className="label-micro">Risk-Leverage Radar</p>
+      <h3 className="mt-2 text-lg font-semibold text-slate-100">Signal Distribution</h3>
       <ResponsiveContainer width="100%" height="100%">
         <RadarChart
           data={data}
-          margin={{ top: 24, right: 36, bottom: 24, left: 36 }}
-          outerRadius="66%"
+          margin={{ top: 22, right: 44, bottom: 18, left: 44 }}
+          outerRadius="63%"
         >
-          <PolarGrid stroke="rgba(148,163,184,0.32)" strokeWidth={0.8} />
+          <PolarGrid stroke="rgba(148,163,184,0.24)" strokeWidth={0.9} />
           <PolarAngleAxis
             dataKey="metric"
-            tick={{ fill: "#B8C2D4", fontSize: 10 }}
+            tick={{ fill: "#CBD5E1", fontSize: 11 }}
             tickLine={false}
           />
           <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
           <Radar
             dataKey="value"
-            fill="#6f7fa3"
-            fillOpacity={0.24}
+            fill="#6D83C7"
+            fillOpacity={0.18}
             name="Strength"
-            stroke="#788caf"
-            strokeWidth={1.2}
+            stroke="#7F95D6"
+            strokeWidth={1.1}
           />
         </RadarChart>
       </ResponsiveContainer>
