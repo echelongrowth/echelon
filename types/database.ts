@@ -99,6 +99,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      side_projects: {
+        Row: {
+          id: string;
+          user_id: string;
+          analysis_id: string | null;
+          career_goal: string | null;
+          generated_at: string;
+          projects_json: Json;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          analysis_id?: string | null;
+          career_goal?: string | null;
+          generated_at?: string;
+          projects_json: Json;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          analysis_id?: string | null;
+          career_goal?: string | null;
+          generated_at?: string;
+          projects_json?: Json;
+        };
+        Relationships: [];
+      };
       users: {
         Row: {
           id: string;
@@ -134,6 +161,12 @@ export type Database = {
           p_tasks: Json;
         };
         Returns: string;
+      };
+      count_side_projects_last_30_days: {
+        Args: {
+          p_user_id: string;
+        };
+        Returns: number;
       };
       recalibrate_assessment: {
         Args: {

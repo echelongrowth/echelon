@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ProgressChecklist } from "@/components/progress-checklist";
 import { RiskLeverageRadar } from "@/components/risk-leverage-radar";
 import { DashboardHeader } from "@/components/dashboard-header";
+import { EntrepreneurialSideProjectEngine } from "@/components/pro/EntrepreneurialSideProjectEngine";
 import { calculateScores } from "@/lib/scoring";
 import { getPlanTypeForUser } from "@/lib/plan";
 import { getRecalibrationStatus } from "@/lib/recalibration";
@@ -14,6 +15,7 @@ import type {
   PlanType,
 } from "@/types/intelligence";
 import type { Json } from "@/types/database";
+import type { StrategicSideProject } from "@/types/side-projects";
 
 function isAssessmentAnswers(value: Json | null): value is AssessmentAnswers {
   if (!value || typeof value !== "object") return false;
@@ -36,6 +38,27 @@ function parseIntelligenceReport(
 ): IntelligenceReport | FreeIntelligenceReport | null {
   if (!isObject(value)) return null;
   return value as IntelligenceReport | FreeIntelligenceReport;
+}
+
+function isStrategicSideProjects(value: Json | null): value is { projects: StrategicSideProject[] } {
+  if (!isObject(value)) return false;
+  const projects = value.projects;
+  if (!Array.isArray(projects)) return false;
+
+  return projects.every((project) => {
+    if (!project || typeof project !== "object") return false;
+    const candidate = project as Record<string, unknown>;
+    return (
+      typeof candidate.title === "string" &&
+      typeof candidate.strategicObjective === "string" &&
+      typeof candidate.marketOpportunity === "string" &&
+      typeof candidate.monetizationAngle === "string" &&
+      typeof candidate.aiIntegrationAngle === "string" &&
+      typeof candidate.executionRoadmap === "string" &&
+      typeof candidate.resumeBulletExample === "string" &&
+      typeof candidate.riskAssessment === "string"
+    );
+  });
 }
 
 function aiReadinessScore(level: AssessmentAnswers["skills"]["aiFamiliarity"]): number {
@@ -141,6 +164,9 @@ function daysSince(value: string): number {
   return Math.floor(elapsedMs / (24 * 60 * 60 * 1000));
 }
 
+const SIDE_PROJECT_ENGINE_LOCK_REASON =
+  "Strategic Side-Project Engine activates for entrepreneurial or side-income career tracks.";
+
 function deriveFirstName(
   metadata: unknown,
   fullName: string | null,
@@ -244,10 +270,32 @@ export default async function DashboardPage() {
   const riskScore = latestAssessment.risk_score ?? computedScores.riskScore;
   const report = parseIntelligenceReport(latestAssessment.intelligence_report);
   const radarData = getRadarData(latestAssessment.answers);
+  const { data: latestSideProjectsRow } =
+    planType === "pro"
+      ? await supabase
+          .from("side_projects")
+          .select("projects_json")
+          .eq("user_id", user.id)
+          .order("generated_at", { ascending: false })
+          .limit(1)
+          .maybeSingle()
+      : { data: null };
+  const initialSideProjects = isStrategicSideProjects(
+    latestSideProjectsRow?.projects_json ?? null
+  )
+    ? latestSideProjectsRow.projects_json.projects
+    : null;
   const recalibrationStatus = getRecalibrationStatus(
     planType,
     latestAssessment.created_at
   );
+  const goal = latestAssessment.answers.positioning.careerGoal;
+  const entrepreneurialInterest =
+    latestAssessment.answers.positioning.entrepreneurshipInterest;
+  const sideProjectFeatureUnlocked =
+    goal === "Launch Startup" ||
+    goal === "Build Side Income" ||
+    entrepreneurialInterest === "Yes";
   const firstName = deriveFirstName(
     user.user_metadata,
     userProfile?.full_name ?? null,
@@ -466,6 +514,17 @@ export default async function DashboardPage() {
             </div>
           </section>
         )}
+
+        {planType === "pro" ? (
+          <section className="mt-12 fade-in-up">
+            <EntrepreneurialSideProjectEngine
+              initialProjects={initialSideProjects}
+              initialUnavailableReason={
+                sideProjectFeatureUnlocked ? undefined : SIDE_PROJECT_ENGINE_LOCK_REASON
+              }
+            />
+          </section>
+        ) : null}
 
         {planType === "pro" ? (
           <section className="mt-10 fade-in-up">
