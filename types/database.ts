@@ -72,6 +72,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      resume_execution_tasks: {
+        Row: {
+          id: string;
+          analysis_id: string;
+          user_id: string;
+          task_id: string;
+          completed: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          analysis_id: string;
+          user_id: string;
+          task_id: string;
+          completed?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          analysis_id?: string;
+          user_id?: string;
+          task_id?: string;
+          completed?: boolean;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       users: {
         Row: {
           id: string;
@@ -99,6 +126,15 @@ export type Database = {
     };
     Views: Record<string, never>;
     Functions: {
+      create_resume_analysis_with_tasks: {
+        Args: {
+          p_resume_text: string;
+          p_analysis_json: Json;
+          p_executive_score: number;
+          p_tasks: Json;
+        };
+        Returns: string;
+      };
       recalibrate_assessment: {
         Args: {
           p_previous_assessment_id: string | null;

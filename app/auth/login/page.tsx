@@ -5,8 +5,8 @@ export default function LoginPage() {
   return (
     <AuthCard
       description="Access your growth operating system."
-      footerHref="/pricing"
-      footerLinkText="View plans"
+      footerHref="/auth/signup?plan=free"
+      footerLinkText="Create account"
       footerText="New to Echelon?"
       title="Login"
     >

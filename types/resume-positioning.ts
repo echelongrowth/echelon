@@ -9,6 +9,7 @@ export type GapSeverity = "Low" | "Medium" | "High";
 
 export type ResumeAnalysis = {
   executive_positioning_score: number;
+  ai_readiness_score: number;
   positioning_tier: PositioningTier;
   strengths: string[];
   critical_gaps: Array<{
@@ -37,12 +38,36 @@ export type ResumeAnalysis = {
     original_pattern: string;
     executive_rewrite: string;
   }>;
+  tactical_execution_priorities: Array<{
+    id: string;
+    title: string;
+    strategic_objective: string;
+    impact_level: "High" | "Medium" | "Low";
+  }>;
   strategic_summary: string;
+};
+
+export type FreeResumeAnalysis = {
+  executive_positioning_score: number;
+  ai_readiness_score: number;
+  positioning_tier: PositioningTier;
+  strengths: string[];
+  critical_gaps: Array<{
+    title: string;
+    severity: GapSeverity;
+    analysis: string;
+  }>;
+  tactical_execution_priorities: Array<{
+    id: string;
+    title: string;
+    strategic_objective: string;
+    impact_level: "High" | "Medium" | "Low";
+  }>;
 };
 
 export type ResumeAnalysisActionState = {
   ok: boolean;
   error: string | null;
-  analysis: ResumeAnalysis | null;
+  analysis: ResumeAnalysis | FreeResumeAnalysis | null;
+  analysisId: string | null;
 };
-

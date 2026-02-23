@@ -6,8 +6,8 @@ export function PromotionAlignment({
   data: ResumeAnalysis["promotion_alignment"];
 }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+    <section className="l1-surface rounded-xl p-8">
+      <p className="label-micro">
         Promotion Alignment
       </p>
       <p className="mt-4 text-sm text-slate-300">
@@ -21,9 +21,9 @@ export function PromotionAlignment({
             {data.next_level_readiness_percentage}%
           </span>
         </div>
-        <div className="mt-2 h-2 rounded-full bg-slate-800">
+        <div className="mt-2 h-2 rounded-full bg-slate-800/80">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#4F8CFF]"
+            className="h-full rounded-full bg-slate-500/85"
             style={{ width: `${data.next_level_readiness_percentage}%` }}
           />
         </div>
@@ -34,4 +34,3 @@ export function PromotionAlignment({
     </section>
   );
 }
-

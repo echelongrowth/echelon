@@ -4,6 +4,7 @@ import { useActionState, useEffect, useState } from "react";
 import { analyzeResumeSubmission } from "@/app/dashboard/resume-positioning/actions";
 import { AnalysisLoader } from "@/app/dashboard/resume-positioning/components/AnalysisLoader";
 import type {
+  FreeResumeAnalysis,
   ResumeAnalysis,
   ResumeAnalysisActionState,
 } from "@/types/resume-positioning";
@@ -11,12 +12,16 @@ import type {
 export function UploadPanel({
   onCompleted,
 }: {
-  onCompleted: (analysis: ResumeAnalysis) => void;
+  onCompleted: (
+    analysis: ResumeAnalysis | FreeResumeAnalysis,
+    analysisId: string
+  ) => void;
 }) {
   const initialResumeAnalysisState: ResumeAnalysisActionState = {
     ok: false,
     error: null,
     analysis: null,
+    analysisId: null,
   };
 
   const [state, formAction, isPending] = useActionState(
@@ -26,15 +31,15 @@ export function UploadPanel({
   const [fileName, setFileName] = useState<string>("");
 
   useEffect(() => {
-    if (state.ok && state.analysis) {
-      onCompleted(state.analysis);
+    if (state.ok && state.analysis && state.analysisId) {
+      onCompleted(state.analysis, state.analysisId);
     }
-  }, [onCompleted, state.analysis, state.ok]);
+  }, [onCompleted, state.analysis, state.analysisId, state.ok]);
 
   return (
     <div className="space-y-6">
-      <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
-        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+      <section className="l1-surface rounded-xl p-8">
+        <p className="label-micro">
           Resume Positioning Intake
         </p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-100">
@@ -55,7 +60,7 @@ export function UploadPanel({
             </label>
             <input
               accept="application/pdf"
-              className="block w-full rounded-lg border border-white/10 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-sm file:font-medium file:text-slate-100 hover:file:bg-white/15"
+              className="block w-full rounded-lg border border-slate-600/55 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-slate-700/70 file:px-3 file:py-2 file:text-sm file:font-medium file:text-slate-100 hover:file:bg-slate-700/90"
               id="resumeFile"
               name="resumeFile"
               onChange={(event) =>
@@ -76,7 +81,7 @@ export function UploadPanel({
               Or Paste Resume Text
             </label>
             <textarea
-              className="min-h-48 w-full rounded-lg border border-white/10 bg-slate-900/70 px-4 py-3 text-sm text-slate-100 outline-none transition-all duration-200 focus:border-[#8B5CF6]/60"
+              className="min-h-48 w-full rounded-lg border border-slate-600/55 bg-slate-900/70 px-4 py-3 text-sm text-slate-100 outline-none transition-all duration-200 ease-out focus:border-slate-400/70"
               id="resumeText"
               name="resumeText"
               placeholder="Paste resume content here..."
@@ -90,7 +95,7 @@ export function UploadPanel({
           ) : null}
 
           <button
-            className="inline-flex h-11 items-center justify-center rounded-lg bg-gradient-to-r from-[#8B5CF6] to-[#4F8CFF] px-5 text-sm font-medium text-white transition-all duration-200 ease-in-out hover:shadow-[0_0_24px_rgba(79,140,255,0.35)] disabled:cursor-not-allowed disabled:opacity-70"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-indigo-300/25 bg-indigo-400/20 px-5 text-sm font-medium text-indigo-100 transition-all duration-200 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28 disabled:cursor-not-allowed disabled:opacity-70"
             disabled={isPending}
             type="submit"
           >

@@ -19,12 +19,17 @@ export function AuthForm({ mode, initialPlan = "free" }: AuthFormProps) {
   const searchParams = useSearchParams();
   const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const isSignup = mode === "signup";
+
+  function normalizeName(value: string): string {
+    return value.replace(/\s+/g, " ").trim();
+  }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -34,16 +39,45 @@ export function AuthForm({ mode, initialPlan = "free" }: AuthFormProps) {
 
     try {
       if (isSignup) {
+        const normalizedFullName = normalizeName(fullName);
+        if (normalizedFullName.length < 2 || normalizedFullName.length > 80) {
+          throw new Error("Full Name must be between 2 and 80 characters.");
+        }
+
+        const firstName = normalizedFullName.split(/\s+/)[0] ?? normalizedFullName;
+
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             data: {
               plan_type: initialPlan,
+              full_name: normalizedFullName,
+              first_name: firstName,
             },
           },
         });
         if (error) throw error;
+
+        // Best-effort profile sync. Signup should not fail if table policy blocks this.
+        try {
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (user) {
+            await supabase.from("users").upsert(
+              {
+                id: user.id,
+                email,
+                full_name: normalizedFullName,
+                plan: initialPlan,
+              },
+              { onConflict: "id" }
+            );
+          }
+        } catch {
+          // ignore profile sync failures
+        }
 
         setSuccessMessage(
           "Account created. If email confirmation is enabled, check your inbox."
@@ -62,6 +96,8 @@ export function AuthForm({ mode, initialPlan = "free" }: AuthFormProps) {
     } catch (error) {
       if (error instanceof AuthApiError) {
         setErrorMessage(error.message);
+      } else if (error instanceof Error) {
+        setErrorMessage(error.message);
       } else {
         setErrorMessage("Unable to complete this request. Please try again.");
       }
@@ -72,6 +108,19 @@ export function AuthForm({ mode, initialPlan = "free" }: AuthFormProps) {
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
+      {isSignup ? (
+        <InputField
+          autoComplete="name"
+          id="fullName"
+          label="Full Name"
+          maxLength={80}
+          onChange={(event) => setFullName(event.target.value)}
+          placeholder="Your full name"
+          required
+          type="text"
+          value={fullName}
+        />
+      ) : null}
       <InputField
         autoComplete="email"
         id="email"

@@ -23,11 +23,11 @@ function planLabel(planType: PlanBadgeType): string {
 
 function planBadgeClass(planType: PlanBadgeType): string {
   if (planType === "executive") {
-    return "border-blue-300/35 bg-gradient-to-r from-blue-500/20 to-violet-500/20 text-blue-100 shadow-[0_0_16px_rgba(79,140,255,0.3)]";
+    return "border-slate-400/45 bg-slate-700/45 text-slate-100";
   }
 
   if (planType === "pro") {
-    return "border-violet-300/40 bg-violet-500/20 text-violet-100 shadow-[0_0_16px_rgba(139,92,246,0.35)] animate-[pulse_4s_ease-in-out_infinite]";
+    return "border-indigo-300/35 bg-indigo-400/15 text-indigo-100 animate-[pulse_4s_ease-in-out_infinite]";
   }
 
   return "border-white/15 bg-white/5 text-slate-200";
@@ -55,11 +55,11 @@ export function UserIdentity({
 }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-slate-900/70 text-sm font-semibold text-slate-100">
+      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-600/60 bg-slate-900/70 text-sm font-semibold text-slate-100">
         {getInitials(firstName)}
       </div>
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+        <p className="label-micro">
           Career Intelligence Command Center
         </p>
         <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-100">
@@ -90,8 +90,8 @@ export function StrategicStatus({
   riskTrend: RiskTrend;
 }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-slate-900/45 p-5 backdrop-blur-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+    <section className="l2-surface rounded-xl p-5">
+      <p className="label-micro">
         Strategic Status
       </p>
       <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-slate-200 sm:grid-cols-2">
@@ -127,7 +127,7 @@ export function HeaderActions({
     <div className="flex w-full items-center justify-start gap-3 lg:w-auto lg:justify-end">
       {canRecalibrate ? (
         <Link
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-gradient-to-r from-[#8B5CF6] to-[#4F8CFF] px-5 text-sm font-medium text-white transition-all duration-200 ease-in-out hover:shadow-[0_0_24px_rgba(79,140,255,0.3)]"
+          className="inline-flex h-11 items-center justify-center rounded-lg border border-indigo-300/25 bg-indigo-400/20 px-5 text-sm font-medium text-indigo-100 transition-all duration-200 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28"
           href={recalibrateHref}
         >
           Recalibrate Strategic Profile
@@ -143,7 +143,7 @@ export function HeaderActions({
       )}
 
       <Link
-        className="inline-flex h-11 items-center justify-center rounded-lg border border-white/20 bg-white/5 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-in-out hover:border-[#8B5CF6]/45 hover:shadow-[0_0_18px_rgba(139,92,246,0.2)]"
+        className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-500/40 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
         href="/pricing"
       >
         Upgrade Plan
@@ -163,7 +163,7 @@ export function DashboardHeader({
   recalibrateHref,
 }: DashboardHeaderProps) {
   return (
-    <header className="fade-in-up rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
+    <header className="fade-in-up l1-surface rounded-xl p-8">
       <div className="grid gap-6 xl:grid-cols-[1.15fr_1fr_auto] xl:items-center">
         <UserIdentity firstName={firstName} planType={planType} />
         <StrategicStatus
@@ -179,4 +179,3 @@ export function DashboardHeader({
     </header>
   );
 }
-

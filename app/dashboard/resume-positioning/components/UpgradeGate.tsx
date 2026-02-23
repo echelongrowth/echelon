@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export function UpgradeGate() {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+    <section className="l1-surface rounded-xl p-8">
+      <p className="label-micro">
         Pro Feature
       </p>
       <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-100">
@@ -14,7 +14,7 @@ export function UpgradeGate() {
         executive positioning diagnostics and strategic rewrite recommendations.
       </p>
       <Link
-        className="mt-6 inline-flex h-11 items-center justify-center rounded-lg bg-gradient-to-r from-[#8B5CF6] to-[#4F8CFF] px-5 text-sm font-medium text-white transition-all duration-200 ease-in-out hover:shadow-[0_0_26px_rgba(79,140,255,0.35)]"
+        className="mt-6 inline-flex h-11 items-center justify-center rounded-lg border border-indigo-300/25 bg-indigo-400/20 px-5 text-sm font-medium text-indigo-100 transition-all duration-200 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28"
         href="/pricing"
       >
         Upgrade to Pro
@@ -22,4 +22,3 @@ export function UpgradeGate() {
     </section>
   );
 }
-

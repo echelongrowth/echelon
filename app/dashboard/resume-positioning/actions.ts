@@ -1,9 +1,12 @@
 "use server";
 
+import { createHash } from "crypto";
 import { getPlanTypeForUser } from "@/lib/plan";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import type { Json } from "@/types/database";
+import type { PlanType } from "@/types/intelligence";
 import type {
+  FreeResumeAnalysis,
   ResumeAnalysis,
   ResumeAnalysisActionState,
 } from "@/types/resume-positioning";
@@ -80,6 +83,7 @@ Return JSON in this exact structure:
 
 {
   "executive_positioning_score": number,
+  "ai_readiness_score": number,
   "positioning_tier": "Weak | Developing | Competitive | Strong | Elite",
   "strengths": ["string"],
   "critical_gaps": [
@@ -112,6 +116,14 @@ Return JSON in this exact structure:
       "executive_rewrite": "string"
     }
   ],
+  "tactical_execution_priorities": [
+    {
+      "id": "uuid-like string",
+      "title": "string",
+      "strategic_objective": "string",
+      "impact_level": "High | Medium | Low"
+    }
+  ],
   "strategic_summary": "4-6 sentence executive analytical summary."
 }
 `;
@@ -120,6 +132,7 @@ const INITIAL_STATE: ResumeAnalysisActionState = {
   ok: false,
   error: null,
   analysis: null,
+  analysisId: null,
 };
 
 function toInitialState(error: string): ResumeAnalysisActionState {
@@ -174,6 +187,21 @@ function isRewriteSample(
   );
 }
 
+function isTacticalPriority(
+  value: unknown
+): value is ResumeAnalysis["tactical_execution_priorities"][number] {
+  if (!value || typeof value !== "object") return false;
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.id === "string" &&
+    typeof candidate.title === "string" &&
+    typeof candidate.strategic_objective === "string" &&
+    (candidate.impact_level === "High" ||
+      candidate.impact_level === "Medium" ||
+      candidate.impact_level === "Low")
+  );
+}
+
 function isResumeAnalysis(value: unknown): value is ResumeAnalysis {
   if (!value || typeof value !== "object") return false;
   const candidate = value as Record<string, unknown>;
@@ -194,6 +222,7 @@ function isResumeAnalysis(value: unknown): value is ResumeAnalysis {
 
   return (
     typeof candidate.executive_positioning_score === "number" &&
+    typeof candidate.ai_readiness_score === "number" &&
     ["Weak", "Developing", "Competitive", "Strong", "Elite"].includes(
       String(candidate.positioning_tier)
     ) &&
@@ -208,6 +237,8 @@ function isResumeAnalysis(value: unknown): value is ResumeAnalysis {
     typeof compensation.leverage_assessment === "string" &&
     Array.isArray(candidate.strategic_rewrite_samples) &&
     candidate.strategic_rewrite_samples.every(isRewriteSample) &&
+    Array.isArray(candidate.tactical_execution_priorities) &&
+    candidate.tactical_execution_priorities.every(isTacticalPriority) &&
     typeof candidate.strategic_summary === "string"
   );
 }
@@ -218,6 +249,45 @@ function clampScore(value: number): number {
 
 function normalizeWhitespace(value: string): string {
   return value.replace(/\s+/g, " ").trim();
+}
+
+function toDeterministicTaskId(seed: string, index: number): string {
+  const digest = createHash("sha1")
+    .update(`${seed}:${index}`)
+    .digest("hex")
+    .slice(0, 32);
+
+  return `${digest.slice(0, 8)}-${digest.slice(8, 12)}-${digest.slice(
+    12,
+    16
+  )}-${digest.slice(16, 20)}-${digest.slice(20, 32)}`;
+}
+
+function normalizeTacticalPriorities(
+  priorities: ResumeAnalysis["tactical_execution_priorities"]
+): ResumeAnalysis["tactical_execution_priorities"] {
+  return priorities.map((item, index) => {
+    const baseSeed = `${item.title}:${item.strategic_objective}:${item.impact_level}`;
+    const deterministicId = toDeterministicTaskId(baseSeed, index);
+
+    return {
+      id: deterministicId,
+      title: normalizeWhitespace(item.title),
+      strategic_objective: normalizeWhitespace(item.strategic_objective),
+      impact_level: item.impact_level,
+    };
+  });
+}
+
+function toFreeAnalysis(analysis: ResumeAnalysis): FreeResumeAnalysis {
+  return {
+    executive_positioning_score: analysis.executive_positioning_score,
+    ai_readiness_score: analysis.ai_readiness_score,
+    positioning_tier: analysis.positioning_tier,
+    strengths: analysis.strengths.slice(0, 3),
+    critical_gaps: analysis.critical_gaps.slice(0, 2),
+    tactical_execution_priorities: analysis.tactical_execution_priorities.slice(0, 2),
+  };
 }
 
 function extractPdfText(binaryText: string): string {
@@ -259,7 +329,7 @@ async function resolveResumeText(formData: FormData): Promise<string> {
   return parsedText;
 }
 
-async function getProAuthorizedUser() {
+async function getAuthorizedUser() {
   const supabase = await createSupabaseServerClient();
   const {
     data: { user },
@@ -281,11 +351,7 @@ async function getProAuthorizedUser() {
       ? tablePlan
       : getPlanTypeForUser(user);
 
-  if (derivedPlan !== "pro") {
-    throw new Error("Pro plan required for Resume Positioning Intelligence.");
-  }
-
-  return { supabase, user };
+  return { supabase, user, planType: derivedPlan as PlanType };
 }
 
 async function requestAnalysisFromOpenAI(resumeText: string): Promise<ResumeAnalysis> {
@@ -313,6 +379,7 @@ async function requestAnalysisFromOpenAI(resumeText: string): Promise<ResumeAnal
             additionalProperties: false,
             properties: {
               executive_positioning_score: { type: "number" },
+              ai_readiness_score: { type: "number" },
               positioning_tier: {
                 type: "string",
                 enum: ["Weak", "Developing", "Competitive", "Strong", "Elite"],
@@ -386,10 +453,28 @@ async function requestAnalysisFromOpenAI(resumeText: string): Promise<ResumeAnal
                   required: ["original_pattern", "executive_rewrite"],
                 },
               },
+              tactical_execution_priorities: {
+                type: "array",
+                items: {
+                  type: "object",
+                  additionalProperties: false,
+                  properties: {
+                    id: { type: "string" },
+                    title: { type: "string" },
+                    strategic_objective: { type: "string" },
+                    impact_level: {
+                      type: "string",
+                      enum: ["High", "Medium", "Low"],
+                    },
+                  },
+                  required: ["id", "title", "strategic_objective", "impact_level"],
+                },
+              },
               strategic_summary: { type: "string" },
             },
             required: [
               "executive_positioning_score",
+              "ai_readiness_score",
               "positioning_tier",
               "strengths",
               "critical_gaps",
@@ -397,6 +482,7 @@ async function requestAnalysisFromOpenAI(resumeText: string): Promise<ResumeAnal
               "promotion_alignment",
               "compensation_leverage_outlook",
               "strategic_rewrite_samples",
+              "tactical_execution_priorities",
               "strategic_summary",
             ],
           },
@@ -439,9 +525,14 @@ async function requestAnalysisFromOpenAI(resumeText: string): Promise<ResumeAnal
     throw new Error("AI response did not match required resume schema.");
   }
 
+  const normalizedPriorities = normalizeTacticalPriorities(
+    parsed.tactical_execution_priorities
+  );
+
   return {
     ...parsed,
     executive_positioning_score: clampScore(parsed.executive_positioning_score),
+    ai_readiness_score: clampScore(parsed.ai_readiness_score),
     dimension_scores: {
       strategic_ownership: clampScore(parsed.dimension_scores.strategic_ownership),
       leadership_visibility: clampScore(parsed.dimension_scores.leadership_visibility),
@@ -456,30 +547,92 @@ async function requestAnalysisFromOpenAI(resumeText: string): Promise<ResumeAnal
         parsed.promotion_alignment.next_level_readiness_percentage
       ),
     },
+    tactical_execution_priorities: normalizedPriorities,
   };
 }
 
-export async function analyzeResume(resumeText: string): Promise<ResumeAnalysis> {
+export async function analyzeResume(
+  resumeText: string
+): Promise<{ analysis: ResumeAnalysis | FreeResumeAnalysis; analysisId: string }> {
   const normalizedText = normalizeWhitespace(resumeText);
   if (!normalizedText) {
     throw new Error("Resume text is required.");
   }
 
-  const { supabase, user } = await getProAuthorizedUser();
-  const analysis = await requestAnalysisFromOpenAI(normalizedText);
+  const { supabase, user, planType } = await getAuthorizedUser();
+  const fullAnalysis = await requestAnalysisFromOpenAI(normalizedText);
 
-  const { error } = await supabase.from("resume_analyses").insert({
-    user_id: user.id,
-    resume_text: normalizedText,
-    analysis_json: analysis as unknown as Json,
-    executive_score: analysis.executive_positioning_score,
-  });
+  if (planType === "free") {
+    const freeAnalysis = toFreeAnalysis(fullAnalysis);
 
-  if (error) {
+    // Free plan keeps only latest analysis and no execution task persistence.
+    const { data: existingAnalyses, error: readError } = await supabase
+      .from("resume_analyses")
+      .select("id")
+      .eq("user_id", user.id);
+
+    if (readError) {
+      throw new Error("Unable to prepare resume analysis storage.");
+    }
+
+    const existingIds = (existingAnalyses ?? []).map((row) => row.id);
+    if (existingIds.length) {
+      const { error: taskDeleteError } = await supabase
+        .from("resume_execution_tasks")
+        .delete()
+        .eq("user_id", user.id);
+      if (taskDeleteError) {
+        throw new Error("Unable to reset previous execution data.");
+      }
+
+      const { error: analysisDeleteError } = await supabase
+        .from("resume_analyses")
+        .delete()
+        .eq("user_id", user.id);
+      if (analysisDeleteError) {
+        throw new Error("Unable to reset previous analysis data.");
+      }
+    }
+
+    const { data: inserted, error: insertError } = await supabase
+      .from("resume_analyses")
+      .insert({
+        user_id: user.id,
+        resume_text: normalizedText,
+        analysis_json: freeAnalysis as unknown as Json,
+        executive_score: freeAnalysis.executive_positioning_score,
+      })
+      .select("id")
+      .single();
+
+    if (insertError || !inserted?.id) {
+      throw new Error("Unable to save resume analysis.");
+    }
+
+    return {
+      analysis: freeAnalysis,
+      analysisId: inserted.id,
+    };
+  }
+
+  const { data: analysisId, error } = await supabase.rpc(
+    "create_resume_analysis_with_tasks",
+    {
+      p_resume_text: normalizedText,
+      p_analysis_json: fullAnalysis as unknown as Json,
+      p_executive_score: fullAnalysis.executive_positioning_score,
+      p_tasks: fullAnalysis.tactical_execution_priorities as unknown as Json,
+    }
+  );
+
+  if (error || !analysisId) {
     throw new Error("Unable to save resume analysis.");
   }
 
-  return analysis;
+  return {
+    analysis: fullAnalysis,
+    analysisId,
+  };
 }
 
 export async function analyzeResumeSubmission(
@@ -488,12 +641,13 @@ export async function analyzeResumeSubmission(
 ): Promise<ResumeAnalysisActionState> {
   try {
     const resumeText = await resolveResumeText(formData);
-    const analysis = await analyzeResume(resumeText);
+    const { analysis, analysisId } = await analyzeResume(resumeText);
 
     return {
       ok: true,
       error: null,
       analysis,
+      analysisId,
     };
   } catch (error) {
     const message =

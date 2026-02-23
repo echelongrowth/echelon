@@ -93,11 +93,17 @@ function ScoreCard({
           : "High Risk Exposure";
 
   return (
-    <article className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm transition-all duration-200 ease-in-out hover:-translate-y-1 hover:border-violet-400/40 hover:shadow-violet-500/20">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+    <article
+      className={`l2-surface panel-hover rounded-xl p-6 lg:col-span-4 ${
+        title.includes("Leverage")
+          ? "border-t border-t-indigo-400/45"
+          : "border-t border-t-slate-600/80"
+      }`}
+    >
+      <p className="label-micro">
         {title}
       </p>
-      <p className="mt-4 bg-gradient-to-r from-[#8B5CF6] to-[#4F8CFF] bg-clip-text text-6xl font-semibold tracking-tight text-transparent">
+      <p className="kpi-number mt-4 text-5xl">
         {value}
       </p>
       <p className="mt-3 text-sm font-medium text-slate-200">{statusLabel}</p>
@@ -108,7 +114,7 @@ function ScoreCard({
 
 function LockedProCard() {
   return (
-    <div className="relative rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
+    <div className="l2-surface relative rounded-xl p-6">
       <div className="pointer-events-none space-y-3 blur-[3px]">
         <div className="h-5 w-40 rounded bg-slate-700/70" />
         <div className="h-4 w-full rounded bg-slate-700/70" />
@@ -116,7 +122,7 @@ function LockedProCard() {
         <div className="h-4 w-8/12 rounded bg-slate-700/70" />
       </div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="rounded-xl border border-white/20 bg-slate-950/85 px-5 py-4 text-center shadow-lg">
+        <div className="rounded-xl border border-slate-500/45 bg-slate-900/85 px-5 py-4 text-center shadow-lg">
           <p className="text-sm font-semibold text-slate-100">
             Pro feature locked
           </p>
@@ -135,12 +141,30 @@ function daysSince(value: string): number {
   return Math.floor(elapsedMs / (24 * 60 * 60 * 1000));
 }
 
-function deriveFirstName(email: string | null, metadata: unknown): string {
+function deriveFirstName(
+  metadata: unknown,
+  fullName: string | null,
+  email: string | null
+): string {
   if (metadata && typeof metadata === "object") {
     const candidate = metadata as Record<string, unknown>;
     const firstName = candidate.first_name;
     if (typeof firstName === "string" && firstName.trim()) {
       return firstName.trim();
+    }
+    const metadataFullName = candidate.full_name;
+    if (typeof metadataFullName === "string" && metadataFullName.trim()) {
+      const parsed = metadataFullName.trim().split(/\s+/)[0] ?? "";
+      if (parsed) {
+        return parsed.charAt(0).toUpperCase() + parsed.slice(1);
+      }
+    }
+  }
+
+  if (fullName && fullName.trim()) {
+    const firstName = fullName.trim().split(/\s+/)[0] ?? "";
+    if (firstName) {
+      return firstName.charAt(0).toUpperCase() + firstName.slice(1);
     }
   }
 
@@ -170,6 +194,12 @@ export default async function DashboardPage() {
     redirect("/auth/login");
   }
 
+  const { data: userProfile } = await supabase
+    .from("users")
+    .select("full_name")
+    .eq("id", user.id)
+    .maybeSingle();
+
   const planType: PlanType = getPlanTypeForUser(user);
 
   // Dashboard acts as a smart entry point.
@@ -189,16 +219,16 @@ export default async function DashboardPage() {
 
   if (!latestAssessment || !isAssessmentAnswers(latestAssessment.answers)) {
     return (
-      <main className="min-h-screen bg-[linear-gradient(180deg,#0E1117_0%,#111827_100%)] text-slate-100">
-        <div className="mx-auto w-full max-w-6xl px-6 py-10">
-          <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
+      <main className="min-h-screen text-slate-100">
+        <div className="mx-auto w-full max-w-7xl px-6 py-10">
+          <section className="l1-surface rounded-xl p-8">
             <h1 className="text-2xl font-semibold text-slate-100">Dashboard</h1>
             <p className="mt-3 text-sm text-slate-400">
               We could not find a valid assessment payload. Please complete your
               assessment again.
             </p>
             <Link
-              className="mt-5 inline-flex h-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 text-sm font-medium text-slate-100 transition duration-200 ease-in-out hover:border-[#8B5CF6]/50 hover:shadow-[0_0_24px_rgba(139,92,246,0.25)]"
+              className="mt-5 inline-flex h-10 items-center justify-center rounded-lg border border-slate-500/45 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
               href="/assessment"
             >
               Complete Assessment
@@ -218,14 +248,18 @@ export default async function DashboardPage() {
     planType,
     latestAssessment.created_at
   );
-  const firstName = deriveFirstName(user.email ?? null, user.user_metadata);
+  const firstName = deriveFirstName(
+    user.user_metadata,
+    userProfile?.full_name ?? null,
+    user.email ?? null
+  );
   const lastCalibrationDays = daysSince(latestAssessment.created_at);
   const riskTrend = riskScore <= 35 ? "Stable" : riskScore <= 60 ? "Improving" : "Elevated";
   const recalibrateHref = "/assessment?recalibrate=1";
 
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#0E1117_0%,#111827_100%)] text-slate-100">
-      <div className="mx-auto w-full max-w-6xl px-6 py-10">
+    <main className="min-h-screen text-slate-100">
+      <div className="mx-auto w-full max-w-7xl px-6 py-10">
         <DashboardHeader
           canRecalibrate={recalibrationStatus.canRecalibrate}
           firstName={firstName}
@@ -236,7 +270,7 @@ export default async function DashboardPage() {
           riskTrend={riskTrend}
         />
 
-        <section className="mt-10 grid gap-8 lg:grid-cols-3 fade-in-up">
+        <section className="mt-10 grid gap-8 lg:grid-cols-12 fade-in-up">
           <ScoreCard
             helper="Composite indicator of strategic upside and positioning strength."
             title="Career Leverage Score"
@@ -250,8 +284,8 @@ export default async function DashboardPage() {
           <RiskLeverageRadar data={radarData} />
         </section>
 
-        <section className="mt-10 rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm fade-in-up">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+        <section className="l1-surface mt-12 rounded-xl p-8 fade-in-up">
+          <p className="label-micro">
             Market Positioning
           </p>
           <h2 className="mt-3 text-2xl font-semibold text-slate-100">
@@ -263,8 +297,8 @@ export default async function DashboardPage() {
           </p>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm fade-in-up">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+        <section className="l1-surface mt-12 rounded-xl p-8 fade-in-up">
+          <p className="label-micro">
             Positioning Gaps
           </p>
           <h2 className="mt-3 text-2xl font-semibold text-slate-100">Strategic Gaps</h2>
@@ -272,7 +306,7 @@ export default async function DashboardPage() {
             <ul className="mt-5 space-y-3">
               {report.strategicGaps.map((gap) => (
                 <li
-                  className="rounded-xl border border-white/10 bg-slate-900/60 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-in-out hover:border-[#4F8CFF]/40"
+                  className="rounded-xl border border-slate-700/55 bg-slate-900/55 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-slate-500/70"
                   key={gap}
                 >
                   {gap}
@@ -286,9 +320,9 @@ export default async function DashboardPage() {
           )}
         </section>
 
-        <section className="mt-10 grid gap-8 lg:grid-cols-2 fade-in-up">
-          <article className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+        <section className="mt-12 grid gap-8 lg:grid-cols-2 fade-in-up">
+          <article className="l1-surface rounded-xl p-8">
+            <p className="label-micro">
               30 Days
             </p>
             <h2 className="mt-3 text-2xl font-semibold text-slate-100">Roadmap</h2>
@@ -296,7 +330,7 @@ export default async function DashboardPage() {
               <ul className="mt-5 space-y-3">
                 {report.roadmap30Days.map((item) => (
                   <li
-                    className="rounded-xl border border-white/10 bg-slate-900/60 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-in-out hover:border-[#4F8CFF]/40"
+                    className="rounded-xl border border-slate-700/55 bg-slate-900/55 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-slate-500/70"
                     key={item}
                   >
                     {item}
@@ -310,8 +344,8 @@ export default async function DashboardPage() {
             )}
           </article>
 
-          <article className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <article className="l1-surface rounded-xl p-8">
+            <p className="label-micro">
               90 Days
             </p>
             <h2 className="mt-3 text-2xl font-semibold text-slate-100">
@@ -322,7 +356,7 @@ export default async function DashboardPage() {
                 <ol className="mt-5 space-y-3">
                   {report.roadmap90Days.map((step) => (
                     <li
-                      className="rounded-xl border border-white/10 bg-slate-900/60 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-in-out hover:border-[#4F8CFF]/40"
+                      className="rounded-xl border border-slate-700/55 bg-slate-900/55 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-slate-500/70"
                       key={`${step.priority}-${step.action}`}
                     >
                       <p className="font-semibold text-slate-100">
@@ -344,9 +378,9 @@ export default async function DashboardPage() {
         </section>
 
         {planType === "pro" ? (
-          <section className="mt-10 grid gap-8 lg:grid-cols-2 fade-in-up">
-            <article className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
-              <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+          <section className="mt-12 grid gap-8 lg:grid-cols-2 fade-in-up">
+            <article className="l1-surface rounded-xl p-8">
+              <p className="label-micro">
                 Capability Growth
               </p>
               <h2 className="mt-3 text-2xl font-semibold text-slate-100">
@@ -356,7 +390,7 @@ export default async function DashboardPage() {
                 <ul className="mt-5 space-y-3">
                   {report.skillRecommendations.map((item) => (
                     <li
-                      className="rounded-xl border border-white/10 bg-slate-900/60 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-in-out hover:border-[#4F8CFF]/40"
+                      className="rounded-xl border border-slate-700/55 bg-slate-900/55 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-slate-500/70"
                       key={item}
                     >
                       {item}
@@ -370,10 +404,10 @@ export default async function DashboardPage() {
               )}
             </article>
 
-            <article className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
+            <article className="l1-surface rounded-xl p-8">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
+                  <p className="label-micro">
                     Narrative Positioning
                   </p>
                   <h2 className="mt-3 text-2xl font-semibold text-slate-100">
@@ -381,7 +415,7 @@ export default async function DashboardPage() {
                   </h2>
                 </div>
                 <Link
-                  className="inline-flex h-9 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-3 text-xs font-medium text-slate-100 transition-all duration-200 ease-in-out hover:border-[#8B5CF6]/45 hover:shadow-[0_0_16px_rgba(139,92,246,0.2)]"
+                  className="inline-flex h-9 items-center justify-center rounded-lg border border-slate-500/40 bg-slate-800/45 px-3 text-xs font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
                   href="/dashboard/resume-positioning"
                 >
                   Open Module
@@ -392,14 +426,14 @@ export default async function DashboardPage() {
                   ? report.resumePositioningInsights
                   : "Resume positioning insights will appear after report generation."}
               </p>
-              <h3 className="mt-6 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+              <h3 className="label-micro mt-6">
                 Side-Project Suggestions
               </h3>
               {report && "sideProjectSuggestions" in report ? (
                 <ul className="mt-3 space-y-3">
                   {report.sideProjectSuggestions.map((item) => (
                     <li
-                      className="rounded-xl border border-white/10 bg-slate-900/60 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-in-out hover:border-[#4F8CFF]/40"
+                      className="rounded-xl border border-slate-700/55 bg-slate-900/55 px-5 py-4 text-sm text-slate-200 transition duration-200 ease-out hover:-translate-y-0.5 hover:border-slate-500/70"
                       key={item}
                     >
                       {item}
@@ -410,7 +444,7 @@ export default async function DashboardPage() {
             </article>
           </section>
         ) : (
-          <section className="mt-10 rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm fade-in-up">
+          <section className="l1-surface mt-12 rounded-xl p-8 fade-in-up">
             <h2 className="text-2xl font-semibold text-slate-100">Upgrade to Pro</h2>
             <p className="mt-3 text-sm text-slate-300">
               Unlock full 90-day strategy, skill recommendations, resume insights,
@@ -418,13 +452,13 @@ export default async function DashboardPage() {
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <Link
-                className="inline-flex h-10 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-in-out hover:border-[#8B5CF6]/45 hover:shadow-[0_0_18px_rgba(139,92,246,0.2)]"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-500/45 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
                 href="/dashboard/resume-positioning"
               >
                 View Resume Module
               </Link>
               <Link
-                className="inline-flex h-10 items-center justify-center rounded-lg bg-gradient-to-r from-[#8B5CF6] to-[#4F8CFF] px-4 text-sm font-medium text-white transition-all duration-200 ease-in-out hover:shadow-[0_0_24px_rgba(79,140,255,0.35)]"
+                className="inline-flex h-10 items-center justify-center rounded-lg border border-indigo-300/25 bg-indigo-400/20 px-4 text-sm font-medium text-indigo-100 transition-all duration-200 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28"
                 href="/pricing"
               >
                 Upgrade Plan
@@ -439,11 +473,6 @@ export default async function DashboardPage() {
           </section>
         ) : null}
 
-        <section className="mt-10 rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-xl backdrop-blur-sm">
-          <p className="text-xs uppercase tracking-[0.18em] text-slate-400">
-            Current Plan: {planType.toUpperCase()}
-          </p>
-        </section>
       </div>
     </main>
   );

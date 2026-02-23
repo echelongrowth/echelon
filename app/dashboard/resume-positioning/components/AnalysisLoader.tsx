@@ -21,15 +21,14 @@ export function AnalysisLoader() {
   }, []);
 
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-xl backdrop-blur-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">
+    <section className="l1-surface rounded-xl p-6">
+      <p className="label-micro">
         Analysis In Progress
       </p>
       <p className="mt-3 text-lg font-medium text-slate-100">{stages[index]}</p>
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800">
-        <div className="h-full w-1/2 animate-[pulse_2.6s_ease-in-out_infinite] rounded-full bg-gradient-to-r from-[#8B5CF6] to-[#4F8CFF]" />
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800/80">
+        <div className="h-full w-1/2 animate-[pulse_2.6s_ease-in-out_infinite] rounded-full bg-slate-500/85" />
       </div>
     </section>
   );
 }
-

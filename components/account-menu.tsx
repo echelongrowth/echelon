@@ -25,7 +25,7 @@ export function AccountMenu() {
       <button
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-white/15 bg-white/5 text-slate-100 transition-all duration-200 ease-in-out hover:border-[#8B5CF6]/50 hover:shadow-[0_0_18px_rgba(139,92,246,0.2)]"
+        className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-500/40 bg-slate-800/45 text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
         onClick={() => setIsOpen((value) => !value)}
         type="button"
       >
@@ -42,10 +42,10 @@ export function AccountMenu() {
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-14 z-30 w-44 rounded-xl border border-white/10 bg-slate-950/95 p-2 shadow-xl backdrop-blur-md">
+        <div className="absolute right-0 top-14 z-30 w-44 rounded-xl border border-slate-600/55 bg-slate-900/95 p-2 shadow-xl backdrop-blur-md">
           <Link
             className="block rounded-lg px-3 py-2 text-sm text-slate-200 transition-colors duration-200 hover:bg-white/10"
-            href="/pricing"
+            href="/dashboard/settings"
             onClick={() => setIsOpen(false)}
           >
             Settings
@@ -63,4 +63,3 @@ export function AccountMenu() {
     </div>
   );
 }
-

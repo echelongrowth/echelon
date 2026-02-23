@@ -15,14 +15,14 @@ export function CriticalGaps({
   gaps: ResumeAnalysis["critical_gaps"];
 }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+    <section className="l1-surface rounded-xl p-8">
+      <p className="label-micro">
         Critical Gaps
       </p>
       <div className="mt-5 space-y-3">
         {gaps.map((gap, index) => (
           <article
-            className="rounded-xl border border-white/10 bg-slate-900/60 p-4"
+            className="rounded-xl border border-slate-700/55 bg-slate-900/55 p-4"
             key={`${gap.title}-${index}`}
           >
             <div className="flex items-center justify-between gap-3">
@@ -40,4 +40,3 @@ export function CriticalGaps({
     </section>
   );
 }
-

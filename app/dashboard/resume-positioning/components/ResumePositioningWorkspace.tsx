@@ -3,24 +3,35 @@
 import { useState } from "react";
 import { UploadPanel } from "@/app/dashboard/resume-positioning/components/UploadPanel";
 import { ResumeAnalysisReport } from "@/app/dashboard/resume-positioning/components/ResumeAnalysisReport";
-import type { ResumeAnalysis } from "@/types/resume-positioning";
+import type { PlanType } from "@/types/intelligence";
+import type {
+  FreeResumeAnalysis,
+  ResumeAnalysis,
+} from "@/types/resume-positioning";
 
 export function ResumePositioningWorkspace({
   initialAnalysis,
+  initialAnalysisId,
   latestCreatedAt,
+  planType,
 }: {
-  initialAnalysis: ResumeAnalysis | null;
+  initialAnalysis: ResumeAnalysis | FreeResumeAnalysis | null;
+  initialAnalysisId: string | null;
   latestCreatedAt: string | null;
+  planType: PlanType;
 }) {
-  const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(initialAnalysis);
+  const [analysis, setAnalysis] = useState<ResumeAnalysis | FreeResumeAnalysis | null>(
+    initialAnalysis
+  );
+  const [analysisId, setAnalysisId] = useState<string | null>(initialAnalysisId);
   const [showUpload, setShowUpload] = useState<boolean>(!initialAnalysis);
 
   return (
     <div className="space-y-8">
-      <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-6 shadow-xl backdrop-blur-sm">
+      <section className="l1-surface rounded-xl p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+            <p className="label-micro">
               Career Intelligence Command Center
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-100">
@@ -38,7 +49,7 @@ export function ResumePositioningWorkspace({
             ) : null}
           </div>
           <button
-            className="inline-flex h-10 items-center justify-center rounded-lg border border-white/20 bg-white/5 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-in-out hover:border-[#8B5CF6]/45 hover:shadow-[0_0_18px_rgba(139,92,246,0.2)]"
+            className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-500/45 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
             onClick={() => setShowUpload((current) => !current)}
             type="button"
           >
@@ -49,15 +60,21 @@ export function ResumePositioningWorkspace({
 
       {showUpload ? (
         <UploadPanel
-          onCompleted={(nextAnalysis) => {
+          onCompleted={(nextAnalysis, nextAnalysisId) => {
             setAnalysis(nextAnalysis);
+            setAnalysisId(nextAnalysisId);
             setShowUpload(false);
           }}
         />
       ) : null}
 
-      {analysis ? <ResumeAnalysisReport analysis={analysis} /> : null}
+      {analysis && analysisId ? (
+        <ResumeAnalysisReport
+          analysis={analysis}
+          analysisId={analysisId}
+          planType={planType}
+        />
+      ) : null}
     </div>
   );
 }
-

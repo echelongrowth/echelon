@@ -6,14 +6,14 @@ export function RewriteSamples({
   samples: ResumeAnalysis["strategic_rewrite_samples"];
 }) {
   return (
-    <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-xl backdrop-blur-sm">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
+    <section className="l1-surface rounded-xl p-8">
+      <p className="label-micro">
         Strategic Rewrite Samples
       </p>
       <div className="mt-5 space-y-3">
         {samples.map((item, index) => (
           <article
-            className="rounded-xl border border-white/10 bg-slate-900/60 p-4"
+            className="rounded-xl border border-slate-700/55 bg-slate-900/55 p-4"
             key={`${item.original_pattern}-${index}`}
           >
             <p className="text-xs uppercase tracking-[0.12em] text-slate-400">
@@ -31,4 +31,3 @@ export function RewriteSamples({
     </section>
   );
 }
-
