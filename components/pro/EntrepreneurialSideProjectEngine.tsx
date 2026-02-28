@@ -1,12 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import type {
   SideProjectsApiResponse,
   StrategicSideProject,
 } from "@/types/side-projects";
 import { EntrepreneurialTrackLocked } from "@/components/pro/EntrepreneurialTrackLocked";
 import { GenerationLimitReached } from "@/components/pro/GenerationLimitReached";
+import { SectionHeader, SurfaceCard } from "@/components/dashboard-primitives";
 
 type RequestState = "idle" | "loading" | "error";
 
@@ -22,10 +24,10 @@ function Badge({
 }) {
   return (
     <span
-      className={`inline-flex rounded-md border px-2.5 py-1 text-xs font-medium ${
+      className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
         tone === "revenue"
-          ? "border-emerald-400/30 bg-emerald-500/10 text-emerald-200"
-          : "border-slate-500/50 bg-slate-800/60 text-slate-200"
+          ? "bg-[#DDF5EA] text-[#0A7F49] dark:bg-[#133227] dark:text-[#56D39C]"
+          : "bg-[color-mix(in_oklab,var(--db-border)_75%,transparent)] text-[var(--db-muted)]"
       }`}
     >
       {label}
@@ -35,9 +37,13 @@ function Badge({
 
 function ProjectCard({ project }: { project: StrategicSideProject }) {
   return (
-    <article className="l2-surface rounded-xl p-6">
+    <motion.article
+      className="apple-card-hover rounded-[20px] border border-[var(--db-border)] bg-[var(--db-surface)] p-6"
+      layout
+      transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+    >
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <h4 className="text-lg font-semibold text-slate-100">{project.title}</h4>
+        <h4 className="text-xl font-semibold tracking-tight text-[var(--db-text)]">{project.title}</h4>
         <div className="flex gap-2">
           <Badge label={`Revenue: ${project.revenuePotential}`} tone="revenue" />
           <Badge
@@ -46,37 +52,37 @@ function ProjectCard({ project }: { project: StrategicSideProject }) {
           />
         </div>
       </div>
-      <dl className="mt-4 grid gap-4 text-sm text-slate-300 md:grid-cols-2">
+      <dl className="mt-5 grid gap-4 text-sm text-[var(--db-muted)] lg:grid-cols-2">
         <div>
-          <dt className="label-micro">Strategic Objective</dt>
-          <dd className="mt-2 leading-6">{project.strategicObjective}</dd>
-        </div>
-        <div>
-          <dt className="label-micro">Market Opportunity</dt>
-          <dd className="mt-2 leading-6">{project.marketOpportunity}</dd>
+          <dt className="apple-label">Strategic Objective</dt>
+          <dd className="mt-2 leading-7">{project.strategicObjective}</dd>
         </div>
         <div>
-          <dt className="label-micro">Monetization Angle</dt>
-          <dd className="mt-2 leading-6">{project.monetizationAngle}</dd>
+          <dt className="apple-label">Market Opportunity</dt>
+          <dd className="mt-2 leading-7">{project.marketOpportunity}</dd>
         </div>
         <div>
-          <dt className="label-micro">AI Integration</dt>
-          <dd className="mt-2 leading-6">{project.aiIntegrationAngle}</dd>
+          <dt className="apple-label">Monetization Angle</dt>
+          <dd className="mt-2 leading-7">{project.monetizationAngle}</dd>
         </div>
-        <div className="md:col-span-2">
-          <dt className="label-micro">Execution Roadmap</dt>
-          <dd className="mt-2 leading-6">{project.executionRoadmap}</dd>
+        <div>
+          <dt className="apple-label">AI Integration</dt>
+          <dd className="mt-2 leading-7">{project.aiIntegrationAngle}</dd>
         </div>
-        <div className="md:col-span-2">
-          <dt className="label-micro">Resume Bullet</dt>
-          <dd className="mt-2 leading-6">{project.resumeBulletExample}</dd>
+        <div className="lg:col-span-2">
+          <dt className="apple-label">Execution Roadmap</dt>
+          <dd className="mt-2 leading-7">{project.executionRoadmap}</dd>
         </div>
-        <div className="md:col-span-2">
-          <dt className="label-micro">Risk Assessment</dt>
-          <dd className="mt-2 leading-6">{project.riskAssessment}</dd>
+        <div className="lg:col-span-2">
+          <dt className="apple-label">Resume Bullet</dt>
+          <dd className="mt-2 leading-7">{project.resumeBulletExample}</dd>
+        </div>
+        <div className="lg:col-span-2">
+          <dt className="apple-label">Risk Assessment</dt>
+          <dd className="mt-2 leading-7">{project.riskAssessment}</dd>
         </div>
       </dl>
-    </article>
+    </motion.article>
   );
 }
 
@@ -153,45 +159,47 @@ export function EntrepreneurialSideProjectEngine({
   }
 
   return (
-    <section className="l1-surface rounded-xl p-8">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <p className="label-micro">Strategic Side-Project Engine</p>
-          <h3 className="mt-3 text-2xl font-semibold text-slate-100">
-            Entrepreneurial Track Intelligence
-          </h3>
-          <p className="mt-2 text-sm text-slate-300">
-            Venture-grade project strategy aligned to leverage, positioning, and execution horizon.
+    <motion.section
+      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 10 }}
+      transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+    >
+      <SurfaceCard className="rounded-[20px] p-7 md:p-8">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <SectionHeader
+            label="Strategic Side-Project Engine"
+            subtitle="Venture-grade project strategy aligned to leverage, positioning, and execution horizon."
+            title="Entrepreneurial Track Intelligence"
+          />
+          <button
+            className="apple-ghost-btn inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={!canGenerate}
+            onClick={handleGenerate}
+            type="button"
+          >
+            {requestState === "loading"
+              ? "Generating strategic analysis..."
+              : "Generate Strategic Side Projects"}
+          </button>
+        </div>
+
+        {errorMessage ? (
+          <p className="mt-5 rounded-2xl border border-[#F2C6C4] bg-[#FBECEC] px-4 py-3 text-sm text-[#A73A35] dark:border-[#5A2C2A] dark:bg-[#311C1B] dark:text-[#FF9A95]">
+            {errorMessage}
           </p>
-        </div>
-        <button
-          className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-500/45 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition duration-200 ease-out enabled:hover:border-slate-400/65 enabled:hover:bg-slate-700/45 disabled:cursor-not-allowed disabled:opacity-60"
-          disabled={!canGenerate}
-          onClick={handleGenerate}
-          type="button"
-        >
-          {requestState === "loading"
-            ? "Generating strategic analysis..."
-            : "Generate Strategic Side Projects"}
-        </button>
-      </div>
+        ) : null}
 
-      {errorMessage ? (
-        <p className="mt-5 rounded-lg border border-rose-500/35 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
-          {errorMessage}
-        </p>
-      ) : null}
+        {lockedReason ? <EntrepreneurialTrackLocked reason={lockedReason} /> : null}
+        {limitMessage ? <GenerationLimitReached message={limitMessage} /> : null}
 
-      {lockedReason ? <EntrepreneurialTrackLocked reason={lockedReason} /> : null}
-      {limitMessage ? <GenerationLimitReached message={limitMessage} /> : null}
-
-      {projects?.length ? (
-        <div className="mt-6 space-y-5">
-          {projects.map((project) => (
-            <ProjectCard key={project.title} project={project} />
-          ))}
-        </div>
-      ) : null}
-    </section>
+        {projects?.length ? (
+          <div className="mt-6 space-y-5">
+            {projects.map((project) => (
+              <ProjectCard key={project.title} project={project} />
+            ))}
+          </div>
+        ) : null}
+      </SurfaceCard>
+    </motion.section>
   );
 }

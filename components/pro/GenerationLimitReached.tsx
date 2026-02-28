@@ -4,12 +4,12 @@ export function GenerationLimitReached({
   message: string;
 }) {
   return (
-    <div className="mt-5 rounded-xl border border-slate-700/55 bg-slate-900/55 p-6">
-      <p className="label-micro">Strategic Side-Project Engine</p>
-      <h3 className="mt-3 text-2xl font-semibold text-slate-100">
+    <div className="mt-5 rounded-2xl border border-[var(--db-border)] bg-[var(--db-surface-subtle)]/70 p-6">
+      <p className="apple-label">Strategic Side-Project Engine</p>
+      <h3 className="mt-2 text-[21px] font-semibold tracking-tight text-[var(--db-text)]">
         Generation Limit Reached
       </h3>
-      <p className="mt-3 text-sm text-slate-300">{message}</p>
+      <p className="mt-3 text-sm leading-7 text-[var(--db-muted)]">{message}</p>
     </div>
   );
 }

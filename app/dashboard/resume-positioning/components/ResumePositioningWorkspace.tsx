@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { UploadPanel } from "@/app/dashboard/resume-positioning/components/UploadPanel";
 import { ResumeAnalysisReport } from "@/app/dashboard/resume-positioning/components/ResumeAnalysisReport";
 import type { PlanType } from "@/types/intelligence";
@@ -28,17 +29,17 @@ export function ResumePositioningWorkspace({
 
   return (
     <div className="space-y-10">
-      <section className="section-shell rounded-2xl p-7">
+      <section className="apple-surface rounded-[20px] p-6 sm:p-7">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <p className="label-micro">
+            <p className="apple-label">
               Career Intelligence Command Center
             </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-slate-100">
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--db-text)]">
               Resume Positioning Intelligence
             </h2>
             {latestCreatedAt ? (
-              <p className="mt-2 text-sm text-slate-400">
+              <p className="mt-2 text-sm text-[var(--db-muted)]">
                 Latest analysis:{" "}
                 {new Intl.DateTimeFormat("en-US", {
                   month: "short",
@@ -48,13 +49,21 @@ export function ResumePositioningWorkspace({
               </p>
             ) : null}
           </div>
-          <button
-            className="inline-flex h-10 items-center justify-center rounded-xl border border-slate-500/45 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
-            onClick={() => setShowUpload((current) => !current)}
-            type="button"
-          >
-            {showUpload ? "Hide Intake" : "Analyze New Resume"}
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Link
+              className="apple-ghost-btn inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-medium"
+              href="/dashboard"
+            >
+              Back to Dashboard
+            </Link>
+            <button
+              className="apple-ghost-btn inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-medium"
+              onClick={() => setShowUpload((current) => !current)}
+              type="button"
+            >
+              {showUpload ? "Hide Intake" : "Analyze New Resume"}
+            </button>
+          </div>
         </div>
       </section>
 

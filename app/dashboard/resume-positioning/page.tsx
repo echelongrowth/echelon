@@ -84,8 +84,8 @@ export default async function ResumePositioningPage() {
     rawAnalysis && planType === "free" ? toFreeView(rawAnalysis) : rawAnalysis;
 
   return (
-    <main className="min-h-screen text-slate-100">
-      <div className="mx-auto w-full max-w-7xl px-6 py-10">
+    <main className="dashboard-theme min-h-screen">
+      <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
         <ResumePositioningWorkspace
           initialAnalysis={initialAnalysis}
           initialAnalysisId={latestAnalysisRow?.id ?? null}

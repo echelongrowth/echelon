@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { AssessmentForm } from "@/components/assessment-form";
 import { getPlanTypeForUser } from "@/lib/plan";
 import { getRecalibrationStatus } from "@/lib/recalibration";
@@ -21,7 +22,7 @@ function isAssessmentAnswers(value: Json | null): value is AssessmentAnswers {
 export default async function AssessmentPage({
   searchParams,
 }: {
-  searchParams?: { recalibrate?: string };
+  searchParams?: { recalibrate?: string } | Promise<{ recalibrate?: string }>;
 }) {
   const supabase = await createSupabaseServerClient();
   const {
@@ -46,12 +47,22 @@ export default async function AssessmentPage({
     redirect("/dashboard");
   }
 
-  const isRecalibrationMode = searchParams?.recalibrate === "1";
+  const resolvedSearchParams =
+    searchParams && "then" in searchParams ? await searchParams : searchParams;
+  const isRecalibrationMode = resolvedSearchParams?.recalibrate === "1";
 
   if (!latestAssessment) {
     return (
-      <main className="min-h-screen text-slate-100">
-        <div className="mx-auto min-h-screen w-full max-w-4xl px-6 py-10">
+      <main className="dashboard-theme min-h-screen">
+        <div className="mx-auto min-h-screen w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+          <div className="mb-5">
+            <Link
+              className="apple-ghost-btn inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-medium"
+              href="/dashboard"
+            >
+              Back to Dashboard
+            </Link>
+          </div>
           <AssessmentForm mode="initial" />
         </div>
       </main>
@@ -70,8 +81,16 @@ export default async function AssessmentPage({
 
 
   return (
-    <main className="min-h-screen text-slate-100">
-      <div className="mx-auto min-h-screen w-full max-w-4xl px-6 py-10">
+    <main className="dashboard-theme min-h-screen">
+      <div className="mx-auto min-h-screen w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mb-5">
+          <Link
+            className="apple-ghost-btn inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-medium"
+            href="/dashboard"
+          >
+            Back to Dashboard
+          </Link>
+        </div>
         <AssessmentForm
           initialAnswers={latestAssessment.answers}
           mode="recalibrate"

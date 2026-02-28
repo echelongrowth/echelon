@@ -15,8 +15,8 @@ export function DimensionScores({
   scores: ResumeAnalysis["dimension_scores"];
 }) {
   return (
-    <section className="l1-surface rounded-xl p-8">
-      <p className="label-micro">
+    <section className="apple-surface rounded-[20px] p-6 sm:p-8">
+      <p className="apple-label">
         Dimension Scores
       </p>
       <div className="mt-5 space-y-4">
@@ -24,12 +24,12 @@ export function DimensionScores({
           (key) => (
             <div key={key}>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-slate-300">{labels[key]}</span>
-                <span className="font-medium text-slate-100">{scores[key]}</span>
+                <span className="text-[var(--db-muted)]">{labels[key]}</span>
+                <span className="font-medium text-[var(--db-text)]">{scores[key]}</span>
               </div>
-        <div className="mt-2 h-2 rounded-full bg-slate-800/80">
+        <div className="mt-2 h-2 rounded-full bg-[var(--db-surface-subtle)]">
           <div
-                  className="h-full rounded-full bg-slate-500/85"
+                  className="h-full rounded-full bg-[var(--db-accent)]"
                   style={{ width: `${scores[key]}%` }}
                 />
               </div>

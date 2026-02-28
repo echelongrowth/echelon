@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { SectionHeader, SurfaceCard } from "@/components/dashboard-primitives";
 
 const defaultItems = [
   "Complete high-impact networking outreach this week",
@@ -17,69 +19,73 @@ export function ProgressChecklist() {
   const completionPct = Math.round((completedCount / defaultItems.length) * 100);
 
   return (
-    <section className="section-shell rounded-2xl p-8 fade-in-soft">
-      <div className="flex items-center gap-3">
-        <span className="h-6 w-1 rounded-full bg-indigo-300/70" />
-        <p className="label-micro">Tactical Execution</p>
-      </div>
-      <div className="mt-3 flex items-end justify-between gap-3">
-        <h3 className="text-2xl font-semibold text-slate-100">Progress Tracking</h3>
-        <p className="rounded-md border border-slate-600/50 bg-slate-800/50 px-2.5 py-1 text-xs font-medium text-slate-200">
-          {completionPct}% complete
-        </p>
-      </div>
-      <div className="mt-5 h-2.5 w-full overflow-hidden rounded-full bg-slate-800/90">
-        <div
-          className="h-full rounded-full bg-indigo-300/70 transition-all duration-300 ease-in-out"
-          style={{ width: `${completionPct}%` }}
+    <motion.section
+      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 10 }}
+      transition={{ duration: 0.26, ease: [0.4, 0, 0.2, 1] }}
+    >
+      <SurfaceCard className="rounded-[20px] p-7 md:p-8">
+        <SectionHeader
+          label="Tactical Execution"
+          subtitle="Track weekly execution against your strategic plan."
+          title="Progress Tracking"
         />
-      </div>
-      <p className="mt-3 text-sm text-slate-400">
-        Track weekly execution against your strategic plan.
-      </p>
-      <div className="mt-6 space-y-3">
-        {defaultItems.map((item, idx) => (
-          <label
-            className="group flex items-start gap-3 rounded-lg border border-slate-700/60 bg-slate-900/55 p-4 transition-all duration-150 ease-out hover:bg-slate-800/70"
-            key={item}
-          >
-            <span
-              className={`mt-1 h-5 w-0.5 rounded-full ${
-                checked[idx] ? "bg-indigo-300/80" : "bg-slate-600/70"
-              }`}
+        <div className="mt-5 flex items-center justify-between gap-3">
+          <div className="h-1.5 w-full overflow-hidden rounded-full bg-[color-mix(in_oklab,var(--db-border)_85%,transparent)]">
+            <div
+              className="h-full rounded-full bg-[var(--db-accent)] transition-all duration-300 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)]"
+              style={{ width: `${completionPct}%` }}
             />
-            <button
-              aria-label={`Toggle item ${idx + 1}`}
-              className={`relative mt-0.5 h-6 w-11 rounded-full border transition-all duration-200 ease-in-out ${
-                checked[idx]
-                  ? "border-indigo-300/55 bg-indigo-300/25"
-                  : "border-slate-600/80 bg-slate-800/90"
-              }`}
-              onClick={(event) => {
-                event.preventDefault();
-                setChecked((prev) =>
-                  prev.map((value, currentIdx) =>
-                    currentIdx === idx ? !value : value
-                  )
-                );
-              }}
-              type="button"
-            >
-              <span
-                className={`absolute top-0.5 h-[18px] w-[18px] rounded-full bg-slate-100 transition-all duration-200 ease-in-out ${
-                  checked[idx] ? "left-5" : "left-0.5"
+          </div>
+          <p className="min-w-fit text-xs font-medium text-[var(--db-muted)]">
+            {completionPct}% complete
+          </p>
+        </div>
+
+        <div className="mt-6 divide-y divide-[var(--db-border)] rounded-2xl border border-[var(--db-border)] bg-[var(--db-surface-subtle)]/70">
+          {defaultItems.map((item, idx) => (
+            <label className="group flex items-center gap-3 px-4 py-4 md:px-5" key={item}>
+              <button
+                aria-label={`Toggle item ${idx + 1}`}
+                className={`relative h-6 w-11 rounded-full border transition-all duration-200 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] ${
+                  checked[idx]
+                    ? "border-[color-mix(in_oklab,var(--db-accent)_55%,transparent)] bg-[color-mix(in_oklab,var(--db-accent)_20%,transparent)]"
+                    : "border-[var(--db-border)] bg-[var(--db-surface)]/90"
                 }`}
-              />
-            </button>
-            <span className="text-sm text-slate-200 transition-colors duration-200 ease-in-out group-hover:text-slate-100">
-              {item}
-            </span>
-            <span className="ml-auto rounded-md border border-slate-600/60 bg-slate-800/55 px-2 py-0.5 text-[11px] text-slate-300">
-              {checked[idx] ? "Complete" : "Pending"}
-            </span>
-          </label>
-        ))}
-      </div>
-    </section>
+                onClick={(event) => {
+                  event.preventDefault();
+                  setChecked((prev) =>
+                    prev.map((value, currentIdx) =>
+                      currentIdx === idx ? !value : value
+                    )
+                  );
+                }}
+                type="button"
+              >
+                <motion.span
+                  animate={{ x: checked[idx] ? 18 : 0 }}
+                  className={`absolute left-0.5 top-0.5 h-[18px] w-[18px] rounded-full ${
+                    checked[idx]
+                      ? "bg-[var(--db-accent)] shadow-[0_0_0_3px_color-mix(in_oklab,var(--db-accent)_16%,transparent)]"
+                      : "bg-[var(--db-text)]"
+                  }`}
+                  transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                />
+              </button>
+              <span
+                className={`text-sm leading-7 transition-colors ${
+                  checked[idx] ? "text-[var(--db-text)]" : "text-[var(--db-muted)]"
+                }`}
+              >
+                {item}
+              </span>
+              <span className="ml-auto text-xs text-[var(--db-muted)]">
+                {checked[idx] ? "Complete" : "Pending"}
+              </span>
+            </label>
+          ))}
+        </div>
+      </SurfaceCard>
+    </motion.section>
   );
 }

@@ -21,13 +21,13 @@ export function AnalysisLoader() {
   }, []);
 
   return (
-    <section className="l1-surface rounded-xl p-6">
-      <p className="label-micro">
+    <section className="apple-surface rounded-[20px] p-6">
+      <p className="apple-label">
         Analysis In Progress
       </p>
-      <p className="mt-3 text-lg font-medium text-slate-100">{stages[index]}</p>
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-slate-800/80">
-        <div className="h-full w-1/2 animate-[pulse_2.6s_ease-in-out_infinite] rounded-full bg-slate-500/85" />
+      <p className="mt-3 text-lg font-medium text-[var(--db-text)]">{stages[index]}</p>
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-[var(--db-surface-subtle)]">
+        <div className="h-full w-1/2 animate-[pulse_2.6s_ease-in-out_infinite] rounded-full bg-[var(--db-accent)]" />
       </div>
     </section>
   );

@@ -8,10 +8,10 @@ import type { ResumeAnalysis } from "@/types/resume-positioning";
 type ExecutionTaskRow = Database["public"]["Tables"]["resume_execution_tasks"]["Row"];
 
 function impactTone(level: "High" | "Medium" | "Low"): string {
-  if (level === "High") return "border-rose-300/30 bg-rose-500/10 text-rose-200";
+  if (level === "High") return "border-[#a73a3555] bg-[#a73a351a] text-[#ff9a95]";
   if (level === "Medium")
-    return "border-amber-300/30 bg-amber-500/10 text-amber-200";
-  return "border-slate-400/35 bg-slate-500/10 text-slate-200";
+    return "border-[#c89a4755] bg-[#c89a471a] text-[#ffd28b]";
+  return "border-[var(--db-border)] bg-[var(--db-surface-subtle)] text-[var(--db-muted)]";
 }
 
 export function ProgressTracking({
@@ -104,43 +104,43 @@ export function ProgressTracking({
 
   if (loading) {
     return (
-      <section className="l1-surface rounded-xl p-8">
+      <section className="apple-surface rounded-[20px] p-6 sm:p-8">
         <div className="flex items-center gap-3">
-          <span className="h-6 w-1 rounded-full bg-slate-500/70" />
-          <p className="label-micro">Tactical Execution Intelligence</p>
+          <span className="h-6 w-1 rounded-full bg-[var(--db-accent)]/70" />
+          <p className="apple-label">Tactical Execution Intelligence</p>
         </div>
-        <p className="mt-3 text-sm text-slate-300">Loading execution priorities...</p>
+        <p className="mt-3 text-sm text-[var(--db-muted)]">Loading execution priorities...</p>
       </section>
     );
   }
 
   return (
-    <section className="l1-surface rounded-xl p-8">
+    <section className="apple-surface rounded-[20px] p-6 sm:p-8">
       <div className="flex items-center gap-3">
-        <span className="h-6 w-1 rounded-full bg-slate-500/70" />
-        <p className="label-micro">Tactical Execution Intelligence</p>
+        <span className="h-6 w-1 rounded-full bg-[var(--db-accent)]/70" />
+        <p className="apple-label">Tactical Execution Intelligence</p>
       </div>
       <div className="mt-3 flex items-end justify-between gap-3">
-        <h3 className="text-2xl font-semibold text-slate-100">Progress Tracking</h3>
-        <p className="rounded-md border border-slate-600/50 bg-slate-800/50 px-2.5 py-1 text-xs font-medium text-slate-300">
+        <h3 className="text-2xl font-semibold text-[var(--db-text)]">Progress Tracking</h3>
+        <p className="rounded-md border border-[var(--db-border)] bg-[var(--db-surface-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--db-muted)]">
           {completionPct}% complete
         </p>
       </div>
-      <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-slate-800/80">
+      <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-[var(--db-surface-subtle)]">
         <div
-          className="h-full rounded-full bg-slate-500/85 transition-all duration-200 ease-in-out"
+          className="h-full rounded-full bg-[var(--db-accent)] transition-all duration-200 ease-in-out"
           style={{ width: `${completionPct}%` }}
         />
       </div>
 
       {error ? (
-        <p className="mt-4 rounded-lg border border-rose-400/35 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <p className="mt-4 rounded-xl border border-[#a73a3550] bg-[#a73a3515] px-4 py-3 text-sm text-[#ff9a95]">
           {error}
         </p>
       ) : null}
 
       {tasks.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-400">
+        <p className="mt-4 text-sm text-[var(--db-muted)]">
           No tactical execution priorities available for this analysis.
         </p>
       ) : (
@@ -154,13 +154,13 @@ export function ProgressTracking({
 
             return (
               <article
-                className="rounded-lg border border-slate-700/55 bg-slate-900/55 p-4 transition-all duration-150 ease-out hover:bg-slate-800/70"
+                className="rounded-xl border border-[var(--db-border)] bg-[var(--db-surface-subtle)] p-4 transition-all duration-150 ease-out hover:bg-[var(--db-surface)]"
                 key={task.id}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-semibold text-slate-100">{title}</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-300">{objective}</p>
+                    <p className="text-sm font-semibold text-[var(--db-text)]">{title}</p>
+                    <p className="mt-2 text-sm leading-6 text-[var(--db-muted)]">{objective}</p>
                     <span
                       className={`mt-3 inline-flex rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${impactTone(
                         impact
@@ -172,15 +172,15 @@ export function ProgressTracking({
                   <button
                     className={`relative mt-0.5 h-6 w-11 rounded-full border transition-all duration-200 ease-in-out ${
                       task.completed
-                        ? "border-indigo-300/55 bg-indigo-300/25"
-                        : "border-slate-600/80 bg-slate-800/90"
+                        ? "border-[color-mix(in_oklab,var(--db-accent)_55%,transparent)] bg-[color-mix(in_oklab,var(--db-accent)_20%,transparent)]"
+                        : "border-[var(--db-border)] bg-[var(--db-surface)]"
                     } ${saving ? "opacity-70" : ""}`}
                     disabled={saving}
                     onClick={() => void toggleTask(task)}
                     type="button"
                   >
                     <span
-                      className={`absolute top-0.5 h-[18px] w-[18px] rounded-full bg-white transition-all duration-200 ease-in-out ${
+                      className={`absolute top-0.5 h-[18px] w-[18px] rounded-full bg-[var(--db-text)] transition-all duration-200 ease-in-out ${
                         task.completed ? "left-5" : "left-0.5"
                       }`}
                     />

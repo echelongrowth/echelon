@@ -9,16 +9,16 @@ export function ProGate({
   children: ReactNode;
 }) {
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-slate-700/70 bg-slate-900/60 p-8">
+    <section className="relative overflow-hidden rounded-[20px] border border-[var(--db-border)] bg-[var(--db-surface)] p-6 sm:p-8">
       <div className="pointer-events-none opacity-65 blur-[2px]">{children}</div>
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="rounded-xl border border-indigo-300/35 bg-slate-900/92 px-5 py-4 text-center">
-          <p className="text-sm font-semibold text-slate-100">{title}</p>
-          <p className="mt-1 text-xs text-slate-400">
+        <div className="rounded-xl border border-[color-mix(in_oklab,var(--db-accent)_45%,transparent)] bg-[var(--db-surface)]/95 px-5 py-4 text-center">
+          <p className="text-sm font-semibold text-[var(--db-text)]">{title}</p>
+          <p className="mt-1 text-xs text-[var(--db-muted)]">
             Available on Pro plan.
           </p>
           <Link
-            className="mt-3 inline-flex h-9 items-center justify-center rounded-xl border border-indigo-300/25 bg-indigo-400/20 px-3 text-xs font-medium text-indigo-100 transition-all duration-150 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28"
+            className="apple-primary-btn mt-3 inline-flex h-9 items-center justify-center rounded-full px-3 text-xs font-medium"
             href="/pricing"
           >
             Unlock Full Intelligence

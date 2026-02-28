@@ -2,6 +2,7 @@
 
 import { createHash } from "crypto";
 import { getPlanTypeForUser } from "@/lib/plan";
+import { createNotification } from "@/lib/notifications";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import type { Json } from "@/types/database";
 import type { PlanType } from "@/types/intelligence";
@@ -609,6 +610,20 @@ export async function analyzeResume(
       throw new Error("Unable to save resume analysis.");
     }
 
+    try {
+      await createNotification(supabase, {
+        userId: user.id,
+        planType,
+        type: "resume_analysis_ready",
+        title: "Resume intelligence analysis is ready",
+        body: "Your latest resume positioning report is available.",
+        ctaUrl: "/dashboard/resume-positioning",
+        dedupeKey: `resume-analysis-ready:${inserted.id}`,
+      });
+    } catch {
+      // Notification delivery should not block primary workflow.
+    }
+
     return {
       analysis: freeAnalysis,
       analysisId: inserted.id,
@@ -627,6 +642,20 @@ export async function analyzeResume(
 
   if (error || !analysisId) {
     throw new Error("Unable to save resume analysis.");
+  }
+
+  try {
+    await createNotification(supabase, {
+      userId: user.id,
+      planType,
+      type: "resume_analysis_ready",
+      title: "Resume intelligence analysis is ready",
+      body: "Your latest resume positioning report is available.",
+      ctaUrl: "/dashboard/resume-positioning",
+      dedupeKey: `resume-analysis-ready:${analysisId}`,
+    });
+  } catch {
+    // Notification delivery should not block primary workflow.
   }
 
   return {

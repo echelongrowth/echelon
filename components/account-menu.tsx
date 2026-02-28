@@ -25,7 +25,7 @@ export function AccountMenu() {
       <button
         aria-expanded={isOpen}
         aria-haspopup="menu"
-        className="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-500/40 bg-slate-800/45 text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
+        className="apple-ghost-btn inline-flex h-10 w-10 items-center justify-center rounded-full text-[var(--db-text)]"
         onClick={() => setIsOpen((value) => !value)}
         type="button"
       >
@@ -42,16 +42,16 @@ export function AccountMenu() {
       </button>
 
       {isOpen ? (
-        <div className="absolute right-0 top-14 z-30 w-44 rounded-xl border border-slate-600/55 bg-slate-900/95 p-2 shadow-xl backdrop-blur-md">
+        <div className="absolute right-0 top-12 z-30 w-44 rounded-2xl border border-[var(--db-border)] bg-[var(--db-surface)]/95 p-2 shadow-[var(--db-shadow)] backdrop-blur-md">
           <Link
-            className="block rounded-lg px-3 py-2 text-sm text-slate-200 transition-colors duration-200 hover:bg-white/10"
+            className="block rounded-xl px-3 py-2 text-sm text-[var(--db-text)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--db-accent)_10%,transparent)]"
             href="/dashboard/settings"
             onClick={() => setIsOpen(false)}
           >
             Settings
           </Link>
           <button
-            className="mt-1 w-full rounded-lg px-3 py-2 text-left text-sm text-slate-200 transition-colors duration-200 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
+            className="mt-1 w-full rounded-xl px-3 py-2 text-left text-sm text-[var(--db-text)] transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--db-accent)_10%,transparent)] disabled:cursor-not-allowed disabled:opacity-70"
             disabled={isLoggingOut}
             onClick={handleLogout}
             type="button"

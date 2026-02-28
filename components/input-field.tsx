@@ -8,12 +8,12 @@ type InputFieldProps = InputHTMLAttributes<HTMLInputElement> & {
 export function InputField({ id, label, ...props }: InputFieldProps) {
   return (
     <div className="space-y-2">
-      <label className="block text-sm font-medium text-slate-200" htmlFor={id}>
+      <label className="block text-sm font-medium text-[var(--app-text)]" htmlFor={id}>
         {label}
       </label>
       <input
         id={id}
-        className="h-11 w-full rounded-lg border border-white/15 bg-slate-950/50 px-3 text-sm text-slate-100 outline-none transition-all duration-200 ease-in-out placeholder:text-slate-500 focus:border-[#8B5CF6]/60 focus:shadow-[0_0_20px_rgba(139,92,246,0.2)]"
+        className="h-12 w-full rounded-xl border border-[var(--app-border)] bg-[#ffffff05] px-3.5 text-sm text-[var(--app-text)] outline-none transition-all duration-200 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] placeholder:text-[var(--app-muted)] focus:border-[#5b8cff77] focus:ring-2 focus:ring-[#5b8cff33]"
         {...props}
       />
     </div>

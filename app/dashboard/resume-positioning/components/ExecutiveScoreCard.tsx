@@ -12,26 +12,26 @@ export function ExecutiveScoreCard({
   aiReadinessScore: number;
 }) {
   return (
-    <section className="l1-surface rounded-xl p-8">
-      <p className="label-micro">
+    <section className="apple-surface rounded-[20px] p-6 sm:p-8">
+      <p className="apple-label">
         Executive Positioning
       </p>
       <div className="mt-4 flex items-end gap-3">
-        <p className="kpi-number text-6xl">
+        <p className="apple-kpi text-6xl">
           {score}
         </p>
-        <span className="mb-2 rounded-full border border-slate-500/55 bg-slate-700/45 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-slate-100">
+        <span className="mb-2 rounded-full border border-[var(--db-border)] bg-[var(--db-surface-subtle)] px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--db-text)]">
           {tier}
         </span>
       </div>
-      <p className="mt-2 text-sm text-slate-300">
+      <p className="mt-2 text-sm text-[var(--db-muted)]">
         AI Readiness Score:{" "}
-        <span className="font-semibold text-slate-100">{aiReadinessScore}</span>
+        <span className="font-semibold text-[var(--db-text)]">{aiReadinessScore}</span>
       </p>
       <ul className="mt-5 space-y-2">
         {strengths.map((item) => (
           <li
-            className="rounded-xl border border-slate-700/55 bg-slate-900/55 px-4 py-3 text-sm text-slate-200"
+            className="rounded-xl border border-[var(--db-border)] bg-[var(--db-surface-subtle)] px-4 py-3 text-sm text-[var(--db-text)]"
             key={item}
           >
             {item}

@@ -126,6 +126,90 @@ export type Database = {
         };
         Relationships: [];
       };
+      notification_preferences: {
+        Row: {
+          user_id: string;
+          channel_in_app: boolean;
+          channel_email: boolean;
+          digest_mode: "instant" | "daily" | "weekly";
+          report_ready: boolean;
+          task_reminders: boolean;
+          billing: boolean;
+          security: boolean;
+          product_updates: boolean;
+          updated_at: string;
+        };
+        Insert: {
+          user_id: string;
+          channel_in_app?: boolean;
+          channel_email?: boolean;
+          digest_mode?: "instant" | "daily" | "weekly";
+          report_ready?: boolean;
+          task_reminders?: boolean;
+          billing?: boolean;
+          security?: boolean;
+          product_updates?: boolean;
+          updated_at?: string;
+        };
+        Update: {
+          user_id?: string;
+          channel_in_app?: boolean;
+          channel_email?: boolean;
+          digest_mode?: "instant" | "daily" | "weekly";
+          report_ready?: boolean;
+          task_reminders?: boolean;
+          billing?: boolean;
+          security?: boolean;
+          product_updates?: boolean;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      notifications: {
+        Row: {
+          id: string;
+          user_id: string;
+          type: string;
+          title: string;
+          body: string;
+          cta_url: string | null;
+          channel: "in_app" | "email";
+          status: "unread" | "read" | "archived";
+          dedupe_key: string | null;
+          scheduled_for: string;
+          read_at: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          type: string;
+          title: string;
+          body: string;
+          cta_url?: string | null;
+          channel?: "in_app" | "email";
+          status?: "unread" | "read" | "archived";
+          dedupe_key?: string | null;
+          scheduled_for?: string;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          type?: string;
+          title?: string;
+          body?: string;
+          cta_url?: string | null;
+          channel?: "in_app" | "email";
+          status?: "unread" | "read" | "archived";
+          dedupe_key?: string | null;
+          scheduled_for?: string;
+          read_at?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
       users: {
         Row: {
           id: string;

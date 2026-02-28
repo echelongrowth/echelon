@@ -4,6 +4,7 @@ import { calculateScores } from "@/lib/scoring";
 import { filterReportByPlan, generateIntelligenceReport } from "@/lib/intelligence";
 import { getPlanTypeForUser } from "@/lib/plan";
 import { getRecalibrationStatus } from "@/lib/recalibration";
+import { createNotification } from "@/lib/notifications";
 import type { AssessmentAnswers } from "@/types/assessment";
 
 export const runtime = "nodejs";
@@ -107,6 +108,20 @@ export async function POST(request: Request) {
       );
     }
 
+    try {
+      await createNotification(supabase, {
+        userId: user.id,
+        planType,
+        type: "recalibration_ready",
+        title: "Recalibration completed",
+        body: "Your latest strategic assessment has been processed.",
+        ctaUrl: "/dashboard",
+        dedupeKey: `recalibration-ready:${newAssessmentId}`,
+      });
+    } catch {
+      // Notification delivery should not block primary workflow.
+    }
+
     return NextResponse.json(
       {
         assessmentId: newAssessmentId,
@@ -127,4 +142,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

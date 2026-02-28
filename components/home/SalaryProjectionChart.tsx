@@ -9,11 +9,11 @@ export function SalaryProjectionChart() {
   return (
     <motion.div
       animate={{ y: [0, 6, 0] }}
-      className="pointer-events-none w-[320px] transform-gpu rounded-2xl border border-white/10 bg-white/5 p-5 shadow-xl backdrop-blur-sm will-change-transform"
+      className="w-full max-w-[320px] rounded-[20px] border border-[var(--app-border)] bg-[#ffffff05] p-5 backdrop-blur-sm"
       transition={{ duration: 12, ease: "easeInOut", repeat: Infinity }}
-      style={{ opacity: 0.72 }}
+      style={{ opacity: 0.86 }}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-400">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--app-muted)]">
         Salary Projection
       </p>
       <svg
@@ -24,8 +24,8 @@ export function SalaryProjectionChart() {
       >
         <defs>
           <linearGradient id="salary-line" x1="10" x2="286" y1="96" y2="18">
-            <stop stopColor="#8B5CF6" />
-            <stop offset="1" stopColor="#4F8CFF" />
+            <stop stopColor="#3f6fe8" />
+            <stop offset="1" stopColor="#5b8cff" />
           </linearGradient>
           <filter id="salary-glow" height="200%" width="200%" x="-50%" y="-50%">
             <feGaussianBlur result="blur" stdDeviation="2.5" />
@@ -35,7 +35,7 @@ export function SalaryProjectionChart() {
             </feMerge>
           </filter>
         </defs>
-        <path d="M10 96 H286" stroke="rgba(148,163,184,0.25)" strokeWidth="1" />
+        <path d="M10 96 H286" stroke="rgba(255,255,255,0.18)" strokeWidth="1" />
         <path
           d={pathD}
           filter="url(#salary-glow)"

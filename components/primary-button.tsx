@@ -14,7 +14,7 @@ export function PrimaryButton({
 }: PrimaryButtonProps) {
   return (
     <button
-      className={`inline-flex h-11 w-full items-center justify-center rounded-lg bg-gradient-to-r from-[#8B5CF6] to-[#4F8CFF] px-4 text-sm font-medium text-white transition-all duration-200 ease-in-out hover:shadow-[0_0_24px_rgba(79,140,255,0.35)] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      className={`inline-flex h-12 w-full items-center justify-center rounded-xl border border-[#7aa4ff55] bg-gradient-to-r from-[#3f6fe8] to-[#5b8cff] px-4 text-sm font-medium text-white transition-all duration-200 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] hover:-translate-y-[1px] hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5b8cff55] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
       disabled={loading || props.disabled}
       {...props}
     >

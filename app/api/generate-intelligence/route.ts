@@ -3,6 +3,7 @@ import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { calculateScores } from "@/lib/scoring";
 import { filterReportByPlan, generateIntelligenceReport } from "@/lib/intelligence";
 import { getPlanTypeForUser } from "@/lib/plan";
+import { createNotification } from "@/lib/notifications";
 import type { AssessmentAnswers } from "@/types/assessment";
 import type {
   GenerateIntelligenceRequest,
@@ -98,6 +99,20 @@ export async function POST(request: Request) {
       intelligenceReport: filteredReport,
     };
 
+    try {
+      await createNotification(supabase, {
+        userId: user.id,
+        planType,
+        type: "intelligence_ready",
+        title: "Strategic intelligence report is ready",
+        body: "New leverage and risk insights are available on your dashboard.",
+        ctaUrl: "/dashboard",
+        dedupeKey: `intelligence-ready:${assessment.id}`,
+      });
+    } catch {
+      // Notification delivery should not block primary workflow.
+    }
+
     return NextResponse.json(responseBody, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -111,4 +126,3 @@ export async function POST(request: Request) {
     );
   }
 }
-

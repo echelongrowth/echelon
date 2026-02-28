@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import {
   PolarAngleAxis,
   PolarGrid,
@@ -8,6 +9,7 @@ import {
   RadarChart,
   ResponsiveContainer,
 } from "recharts";
+import { SectionHeader, SurfaceCard } from "@/components/dashboard-primitives";
 
 type RadarDatum = {
   metric: string;
@@ -20,32 +22,40 @@ type RiskLeverageRadarProps = {
 
 export function RiskLeverageRadar({ data }: RiskLeverageRadarProps) {
   return (
-    <div className="l2-surface panel-hover h-[360px] w-full rounded-2xl p-6 lg:col-span-4">
-      <p className="label-micro">Risk-Leverage Radar</p>
-      <h3 className="mt-2 text-lg font-semibold text-slate-100">Signal Distribution</h3>
-      <ResponsiveContainer width="100%" height="100%">
-        <RadarChart
-          data={data}
-          margin={{ top: 22, right: 44, bottom: 18, left: 44 }}
-          outerRadius="63%"
-        >
-          <PolarGrid stroke="rgba(148,163,184,0.24)" strokeWidth={0.9} />
-          <PolarAngleAxis
-            dataKey="metric"
-            tick={{ fill: "#CBD5E1", fontSize: 11 }}
-            tickLine={false}
-          />
-          <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-          <Radar
-            dataKey="value"
-            fill="#6D83C7"
-            fillOpacity={0.18}
-            name="Strength"
-            stroke="#7F95D6"
-            strokeWidth={1.1}
-          />
-        </RadarChart>
-      </ResponsiveContainer>
-    </div>
+    <motion.div
+      animate={{ opacity: 1, y: 0 }}
+      className="lg:col-span-4"
+      initial={{ opacity: 0, y: 10 }}
+      transition={{ duration: 0.28, ease: [0.4, 0, 0.2, 1] }}
+    >
+      <SurfaceCard className="h-[360px] rounded-[20px] p-6">
+        <SectionHeader label="Risk-Leverage Radar" title="Signal Distribution" />
+        <div className="h-[280px]">
+          <ResponsiveContainer height="100%" width="100%">
+            <RadarChart
+              data={data}
+              margin={{ top: 16, right: 32, bottom: 4, left: 32 }}
+              outerRadius="62%"
+            >
+              <PolarGrid stroke="color-mix(in oklab, var(--db-text) 14%, transparent)" strokeWidth={0.7} />
+              <PolarAngleAxis
+                dataKey="metric"
+                tick={{ fill: "var(--db-muted)", fontSize: 11 }}
+                tickLine={false}
+              />
+              <PolarRadiusAxis axisLine={false} domain={[0, 100]} tick={false} />
+              <Radar
+                dataKey="value"
+                fill="var(--db-accent)"
+                fillOpacity={0.2}
+                name="Strength"
+                stroke="var(--db-accent)"
+                strokeWidth={1.1}
+              />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
+      </SurfaceCard>
+    </motion.div>
   );
 }

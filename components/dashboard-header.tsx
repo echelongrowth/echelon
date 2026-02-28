@@ -1,6 +1,11 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 import type { PlanType } from "@/types/intelligence";
 import { AccountMenu } from "@/components/account-menu";
+import { BrandLogo } from "@/components/brand/BrandLogo";
+import { NotificationsBell } from "@/components/notifications-bell";
 
 type PlanBadgeType = PlanType | "executive";
 type RiskTrend = "Stable" | "Improving" | "Elevated";
@@ -23,20 +28,20 @@ function planLabel(planType: PlanBadgeType): string {
 
 function planBadgeClass(planType: PlanBadgeType): string {
   if (planType === "executive") {
-    return "border-slate-400/45 bg-slate-700/45 text-slate-100";
+    return "bg-[color-mix(in_oklab,var(--db-text)_10%,transparent)] text-[var(--db-text)]";
   }
 
   if (planType === "pro") {
-    return "border-indigo-300/35 bg-indigo-400/15 text-indigo-100 animate-[pulse_4s_ease-in-out_infinite]";
+    return "bg-[color-mix(in_oklab,var(--db-accent)_14%,transparent)] text-[var(--db-accent)]";
   }
 
-  return "border-white/15 bg-white/5 text-slate-200";
+  return "bg-[color-mix(in_oklab,var(--db-border)_85%,transparent)] text-[var(--db-muted)]";
 }
 
 function statusToneClass(trend: RiskTrend): string {
-  if (trend === "Improving") return "text-emerald-300";
-  if (trend === "Elevated") return "text-rose-300";
-  return "text-blue-200";
+  if (trend === "Improving") return "text-[#0A7F49] dark:text-[#56D39C]";
+  if (trend === "Elevated") return "text-[#A73A35] dark:text-[#FF9A95]";
+  return "text-[var(--db-muted)]";
 }
 
 function getInitials(name: string): string {
@@ -54,21 +59,18 @@ export function UserIdentity({
   planType: PlanBadgeType;
 }) {
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex h-14 w-14 items-center justify-center rounded-full border border-slate-600/60 bg-slate-900/70 text-sm font-semibold text-slate-100">
+    <div className="flex items-center gap-3">
+      <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[var(--db-border)] bg-[var(--db-surface)]/90 text-sm font-medium text-[var(--db-text)]">
         {getInitials(firstName)}
       </div>
       <div>
-        <p className="label-micro">
-          Career Intelligence Command Center
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight text-slate-100">
+        <h1 className="text-[22px] font-semibold tracking-tight text-[var(--db-text)]">
           {firstName}
         </h1>
-        <div className="mt-2 flex items-center gap-2">
-          <p className="text-xs text-slate-400">Strategic Profile Active</p>
+        <div className="mt-1.5 flex items-center gap-2">
+          <p className="text-sm text-[var(--db-muted)]">Strategic Profile Active</p>
           <span
-            className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${planBadgeClass(
+            className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] ${planBadgeClass(
               planType
             )}`}
           >
@@ -90,28 +92,20 @@ export function StrategicStatus({
   riskTrend: RiskTrend;
 }) {
   return (
-    <section className="l2-surface rounded-xl p-5">
-      <p className="label-micro">
-        Strategic Status
+    <section className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm text-[var(--db-muted)] md:grid-cols-4">
+      <p>
+        Status{" "}
+        <span className="font-medium text-[#0A7F49] dark:text-[#56D39C]">Active</span>
       </p>
-      <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-slate-200 sm:grid-cols-2">
-        <p>
-          Career Intelligence Status:{" "}
-          <span className="font-medium text-emerald-300">Active</span>
-        </p>
-        <p>
-          Last Calibration:{" "}
-          <span className="font-medium text-slate-100">{lastCalibrationDays} days ago</span>
-        </p>
-        <p>
-          Next Recalibration:{" "}
-          <span className="font-medium text-slate-100">{nextRecalibrationDays} days</span>
-        </p>
-        <p>
-          Risk Trend:{" "}
-          <span className={`font-medium ${statusToneClass(riskTrend)}`}>{riskTrend}</span>
-        </p>
-      </div>
+      <p>
+        Last <span className="font-medium text-[var(--db-text)]">{lastCalibrationDays}d ago</span>
+      </p>
+      <p>
+        Next <span className="font-medium text-[var(--db-text)]">{nextRecalibrationDays}d</span>
+      </p>
+      <p>
+        Risk <span className={`font-medium ${statusToneClass(riskTrend)}`}>{riskTrend}</span>
+      </p>
     </section>
   );
 }
@@ -124,34 +118,40 @@ export function HeaderActions({
   recalibrateHref: string;
 }) {
   return (
-    <div className="flex w-full items-center justify-start gap-3 lg:w-auto lg:justify-end">
+    <div className="flex w-full items-center gap-2.5 md:w-auto md:justify-end">
       {canRecalibrate ? (
         <Link
-          className="inline-flex h-11 items-center justify-center rounded-lg border border-indigo-300/25 bg-indigo-400/20 px-5 text-sm font-medium text-indigo-100 transition-all duration-200 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28"
+          className="apple-primary-btn inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-medium"
           href={recalibrateHref}
         >
-          Recalibrate Strategic Profile
+          Recalibrate
         </Link>
       ) : (
         <button
-          className="inline-flex h-11 cursor-not-allowed items-center justify-center rounded-lg border border-white/10 bg-slate-800/70 px-5 text-sm font-medium text-slate-400"
+          className="inline-flex h-10 cursor-not-allowed items-center justify-center rounded-full border border-[var(--db-border)] px-4 text-sm font-medium text-[var(--db-muted)]/70"
           disabled
           type="button"
         >
-          Recalibrate Strategic Profile
+          Recalibrate
         </button>
       )}
 
       <Link
-        className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-500/40 bg-slate-800/45 px-4 text-sm font-medium text-slate-100 transition-all duration-200 ease-out hover:border-slate-400/65 hover:bg-slate-700/45"
+        className="apple-ghost-btn inline-flex h-10 items-center justify-center rounded-full px-4 text-sm font-medium"
         href="/pricing"
       >
-        Upgrade Plan
+        Upgrade
       </Link>
+      <NotificationsBell />
       <AccountMenu />
     </div>
   );
 }
+
+const transition = {
+  duration: 0.28,
+  ease: [0.4, 0, 0.2, 1],
+} as const;
 
 export function DashboardHeader({
   firstName,
@@ -163,19 +163,29 @@ export function DashboardHeader({
   recalibrateHref,
 }: DashboardHeaderProps) {
   return (
-    <header className="fade-in-up l1-surface rounded-2xl p-8">
-      <div className="grid gap-6 xl:grid-cols-[1.15fr_1fr_auto] xl:items-center">
-        <UserIdentity firstName={firstName} planType={planType} />
-        <StrategicStatus
-          lastCalibrationDays={lastCalibrationDays}
-          nextRecalibrationDays={nextRecalibrationDays}
-          riskTrend={riskTrend}
-        />
+    <motion.header
+      animate={{ opacity: 1, y: 0 }}
+      className="rounded-[20px] border-b border-[var(--db-border)] pb-5"
+      initial={{ opacity: 0, y: 10 }}
+      transition={transition}
+    >
+      <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
+        <div className="space-y-4">
+          <Link className="inline-flex items-center" href="/dashboard">
+            <BrandLogo size="md" variant="full" />
+          </Link>
+          <UserIdentity firstName={firstName} planType={planType} />
+          <StrategicStatus
+            lastCalibrationDays={lastCalibrationDays}
+            nextRecalibrationDays={nextRecalibrationDays}
+            riskTrend={riskTrend}
+          />
+        </div>
         <HeaderActions
           canRecalibrate={canRecalibrate}
           recalibrateHref={recalibrateHref}
         />
       </div>
-    </header>
+    </motion.header>
   );
 }

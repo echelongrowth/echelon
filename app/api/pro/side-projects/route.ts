@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase-server";
 import { generateStrategicSideProjects } from "@/lib/ai/generateStrategicSideProjects";
 import { getPlanTypeForUser } from "@/lib/plan";
+import { createNotification } from "@/lib/notifications";
 import type { AssessmentAnswers } from "@/types/assessment";
 import type { Json } from "@/types/database";
 import type {
@@ -242,6 +243,21 @@ export async function POST() {
       projects: generated.projects,
       generations_used_last_30_days: generationsUsed + 1,
     };
+
+    try {
+      await createNotification(supabase, {
+        userId: user.id,
+        planType: plan,
+        type: "side_projects_ready",
+        title: "Strategic side-project recommendations are ready",
+        body: "Your latest entrepreneurial roadmap has been generated.",
+        ctaUrl: "/dashboard#strategic-projects",
+        dedupeKey: `side-projects-ready:${user.id}:${generationsUsed + 1}`,
+      });
+    } catch {
+      // Notification delivery should not block primary workflow.
+    }
+
     return NextResponse.json(success, { status: 200 });
   } catch {
     return NextResponse.json(

@@ -38,14 +38,14 @@ export function UploadPanel({
 
   return (
     <div className="space-y-6">
-      <section className="l1-surface rounded-xl p-8">
-        <p className="label-micro">
+      <section className="apple-surface rounded-[20px] p-6 sm:p-8">
+        <p className="apple-label">
           Resume Positioning Intake
         </p>
-        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-slate-100">
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--db-text)]">
           Resume Positioning Intelligence
         </h1>
-        <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-300">
+        <p className="mt-3 max-w-3xl text-sm leading-7 text-[var(--db-muted)]">
           Upload a resume PDF or paste resume text to generate structured
           executive-level positioning diagnostics.
         </p>
@@ -53,14 +53,14 @@ export function UploadPanel({
         <form action={formAction} className="mt-6 space-y-5">
           <div>
             <label
-              className="mb-2 block text-sm font-medium text-slate-200"
+              className="mb-2 block text-sm font-medium text-[var(--db-text)]"
               htmlFor="resumeFile"
             >
               Upload Resume (PDF)
             </label>
             <input
               accept="application/pdf"
-              className="block w-full rounded-lg border border-slate-600/55 bg-slate-900/70 px-3 py-2 text-sm text-slate-100 file:mr-4 file:rounded-md file:border-0 file:bg-slate-700/70 file:px-3 file:py-2 file:text-sm file:font-medium file:text-slate-100 hover:file:bg-slate-700/90"
+              className="block w-full rounded-xl border border-[var(--db-border)] bg-[var(--db-surface-subtle)] px-3 py-2 text-sm text-[var(--db-text)] file:mr-4 file:rounded-lg file:border file:border-[var(--db-border)] file:bg-[var(--db-surface)] file:px-3 file:py-2 file:text-sm file:font-medium file:text-[var(--db-text)] hover:file:bg-[var(--db-surface-subtle)]"
               id="resumeFile"
               name="resumeFile"
               onChange={(event) =>
@@ -69,19 +69,19 @@ export function UploadPanel({
               type="file"
             />
             {fileName ? (
-              <p className="mt-2 text-xs text-slate-400">{fileName}</p>
+              <p className="mt-2 text-xs text-[var(--db-muted)]">{fileName}</p>
             ) : null}
           </div>
 
           <div>
             <label
-              className="mb-2 block text-sm font-medium text-slate-200"
+              className="mb-2 block text-sm font-medium text-[var(--db-text)]"
               htmlFor="resumeText"
             >
               Or Paste Resume Text
             </label>
             <textarea
-              className="min-h-48 w-full rounded-lg border border-slate-600/55 bg-slate-900/70 px-4 py-3 text-sm text-slate-100 outline-none transition-all duration-200 ease-out focus:border-slate-400/70"
+              className="min-h-48 w-full rounded-xl border border-[var(--db-border)] bg-[var(--db-surface-subtle)] px-4 py-3 text-sm text-[var(--db-text)] outline-none transition-all duration-200 [transition-timing-function:cubic-bezier(0.4,0,0.2,1)] focus:border-[color-mix(in_oklab,var(--db-accent)_45%,transparent)] focus:ring-2 focus:ring-[color-mix(in_oklab,var(--db-accent)_25%,transparent)]"
               id="resumeText"
               name="resumeText"
               placeholder="Paste resume content here..."
@@ -89,13 +89,13 @@ export function UploadPanel({
           </div>
 
           {state.error ? (
-            <p className="rounded-lg border border-rose-400/35 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+            <p className="rounded-xl border border-[#a73a3550] bg-[#a73a3515] px-4 py-3 text-sm text-[#ff9a95]">
               {state.error}
             </p>
           ) : null}
 
           <button
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-indigo-300/25 bg-indigo-400/20 px-5 text-sm font-medium text-indigo-100 transition-all duration-200 ease-out hover:border-indigo-200/45 hover:bg-indigo-400/28 disabled:cursor-not-allowed disabled:opacity-70"
+            className="apple-primary-btn inline-flex h-11 items-center justify-center rounded-full px-5 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-70"
             disabled={isPending}
             type="submit"
           >

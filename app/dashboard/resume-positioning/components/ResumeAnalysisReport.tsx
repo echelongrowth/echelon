@@ -88,16 +88,16 @@ export function ResumeAnalysisReport({
 
       <CriticalGaps gaps={gaps} />
 
-      <section className="l1-surface rounded-xl p-8">
-        <p className="label-micro">Tactical Priorities</p>
+      <section className="apple-surface rounded-[20px] p-6 sm:p-8">
+        <p className="apple-label">Tactical Priorities</p>
         <ul className="mt-4 space-y-3">
           {priorities.map((item) => (
             <li
-              className="rounded-lg border border-slate-700/55 bg-slate-900/55 p-4"
+              className="rounded-xl border border-[var(--db-border)] bg-[var(--db-surface-subtle)] p-4"
               key={item.id}
             >
-              <p className="text-sm font-semibold text-slate-100">{item.title}</p>
-              <p className="mt-2 text-sm text-slate-300">{item.strategic_objective}</p>
+              <p className="text-sm font-semibold text-[var(--db-text)]">{item.title}</p>
+              <p className="mt-2 text-sm text-[var(--db-muted)]">{item.strategic_objective}</p>
             </li>
           ))}
         </ul>
@@ -129,11 +129,11 @@ export function ResumeAnalysisReport({
             <StrategicSummary summary="Comprehensive executive summary available on Pro plan." />
           </ProGate>
           <ProGate title="Execution Tracking Locked">
-            <section className="l1-surface rounded-xl p-8">
-              <p className="label-micro">Tactical Execution Intelligence</p>
+            <section className="apple-surface rounded-[20px] p-6 sm:p-8">
+              <p className="apple-label">Tactical Execution Intelligence</p>
               <div className="mt-3 flex items-end justify-between gap-3">
-                <h3 className="text-2xl font-semibold text-slate-100">Progress Tracking</h3>
-                <p className="rounded-md border border-slate-600/50 bg-slate-800/50 px-2.5 py-1 text-xs font-medium text-slate-300">
+                <h3 className="text-2xl font-semibold text-[var(--db-text)]">Progress Tracking</h3>
+                <p className="rounded-md border border-[var(--db-border)] bg-[var(--db-surface-subtle)] px-2.5 py-1 text-xs font-medium text-[var(--db-muted)]">
                   0% complete
                 </p>
               </div>

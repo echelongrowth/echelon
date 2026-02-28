@@ -90,8 +90,7 @@ export function AuthForm({ mode, initialPlan = "free" }: AuthFormProps) {
       if (error) throw error;
 
       const nextPath = searchParams.get("next");
-      const targetPath =
-        nextPath && nextPath !== "/dashboard" ? nextPath : "/assessment";
+      const targetPath = nextPath && nextPath.trim() ? nextPath : "/dashboard";
       router.replace(targetPath);
     } catch (error) {
       if (error instanceof AuthApiError) {
@@ -143,12 +142,12 @@ export function AuthForm({ mode, initialPlan = "free" }: AuthFormProps) {
         value={password}
       />
       {errorMessage ? (
-        <p className="rounded-lg border border-red-400/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+        <p className="rounded-xl border border-[#f2c6c4] bg-[#3a1e1f] px-3 py-2 text-sm text-[#ff9a95]">
           {errorMessage}
         </p>
       ) : null}
       {successMessage ? (
-        <p className="rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
+        <p className="rounded-xl border border-[#4a7f67] bg-[#16271f] px-3 py-2 text-sm text-[#7de1b0]">
           {successMessage}
         </p>
       ) : null}
